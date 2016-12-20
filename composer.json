@@ -1,0 +1,27 @@
+{
+	"name": "salamium/database",
+	"description": "Extension for nette database, transaction in one object.",
+	"type": "library",
+	"license": ["MIT"],
+	"authors": [
+		{
+			"name": "Milan Matějček"
+		}
+	],
+	"require": {
+		"nette/database": "^2.2",
+		"nette/bootstrap": "^2.2",
+		"nette/di": "^2.2"
+	},
+	"require-dev": {
+		"salamium/testinium": "dev-master",
+		"nette/utils": "~2.3",
+		"nette/robot-loader": "^2.2"
+	},
+	"autoload": {
+		"psr-4": {
+			"Salamium\\Database\\": "src\\"
+		},
+		"files": ["src/exceptions.php"]
+	}
+}

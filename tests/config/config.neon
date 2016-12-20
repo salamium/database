@@ -1,0 +1,46 @@
+parameters:
+	global:
+		host: localhost
+		dbname: test
+
+database:
+	mysql:
+		dsn: 'mysql:host=%global.host%;dbname=%global.dbname%'
+		user:
+		password:
+		options:
+			lazy: true
+	postgres:
+		dsn: 'pgsql:host=%global.host%;dbname=%global.dbname%'
+		user:
+		password:
+		options:
+			lazy: true
+	sqlite:
+		dsn: 'sqlite::memory:'
+		user:
+		password:
+		options:
+			lazy: true
+
+extensions:
+	databaseExtension: Salamium\Database\DI\DatabaseExtension
+
+databaseExtension:
+	enityNamespace: Salamium\Test\Entity
+	entityMap:
+		users: User
+		countries: Country
+		users_x_books: NULL
+
+services:
+	databaseExtension.cacheAccessor:
+		arguments: [Salamium\Test\MemoryStorage()]
+
+	# Entity are loaded automaticaly
+
+	# Repository
+	- Salamium\Test\Repository\Users('users')
+	- Salamium\Test\Repository\Countries('countries')
+	- Salamium\Test\Repository\UsersXBooks('users_x_books')
+

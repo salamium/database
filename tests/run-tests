@@ -1,0 +1,11 @@
+#!/bin/bash
+
+DIR=`pwd`/`dirname $0`;
+
+cd $DIR/..
+composer install
+
+PHP_VERSION=`php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;'`
+
+$DIR/../vendor/bin/tester -l $DIR/temp/test.log -p php $DIR -s -j 2 --colors 1 -c $DIR/config/php$PHP_VERSION-unix.ini
+
