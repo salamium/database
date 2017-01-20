@@ -7,6 +7,20 @@ abstract class Entity extends \Nette\Database\Table\ActiveRow
 
 	private static $map = [];
 
+	/**
+	 * @param string $key
+	 * @param string|NULL $throughColumn
+	 * @return GroupedSelection|Selection
+	 */
+	public function related($key, $throughColumn = NULL)
+	{
+		if ($throughColumn && substr($throughColumn, 0, 1) === ':') {
+			return $this->getTable()->createSelectionInstance($key)
+					->where($throughColumn, $this->getPrimary());
+		}
+		return parent::related($key, $throughColumn);
+	}
+
 	public function &__get($key)
 	{
 		$method = $this->getMethod($key);
