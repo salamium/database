@@ -2,8 +2,7 @@
 
 namespace Salamium\Database\Extension;
 
-use Salamium\Database\Caching,
-	Nette\Caching as NC;
+use Nette\Caching as NC;
 
 trait ListCacheTrait
 {

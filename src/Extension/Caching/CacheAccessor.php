@@ -1,6 +1,6 @@
 <?php
 
-namespace Salamium\Database\Caching;
+namespace Salamium\Database\Extension\Caching;
 
 use Nette\Caching;
 

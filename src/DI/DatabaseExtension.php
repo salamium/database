@@ -20,7 +20,7 @@ class DatabaseExtension extends CompilerExtension
 
 		// cacheAccessor
 		$builder->addDefinition($this->prefix('cacheAccessor'))
-			->setClass(Database\Caching\CacheAccessor::class);
+			->setClass(Database\Extension\Caching\CacheAccessor::class);
 
 		// netteStaticConventions
 		$builder->addDefinition($this->prefix('netteStaticConventions'))
