@@ -1,12 +1,12 @@
 Simple extension for nette/database.
 -----------------------------------
 
+Extension allow own ActiveRow like Entity, where you can write annotation and your IDE will suggestion to you. And Entity you can write own method, for manipulation with data.
+
 Install via composer
 ```
 composer require salamium/database
 ```
-
-This is extension for Nette\Database, when start support own class like ActiveRow.
 
 Register this extension like is in [test neon](tests/config/config.neon)
 
@@ -15,27 +15,16 @@ extensions:
 	databaseExtension: Salamium\Database\DI\DatabaseExtension
 
 databaseExtension:
-	enityNamespace: Entity\Namespace
 	entityMap:
-		table: Entity
-		users: User
+		# table in database: Entity name with namespace
+		users: Entity\User
 ```
 
-Create repository by extending.
-```php
-<?php
+## Entity
 
-namespace Repository;
+Create entity by extending. Anotation isn't necessary but your IDE will suggestion. I recomended it.
 
-class Users extends \Salamium\Database\Repository
-{
-
-}
-```
-
-**TIP** Create own BaseRepository whose extends.
-
-Create entity by extending. Anotation is not necessary but your IDE will suggestion. I recomended it.
+### User
 ```php
 <?php
 
@@ -45,6 +34,7 @@ namespace Entity;
  * @property int $id
  * @property string $name
  * @property string $surname
+ * @property UserSettings $settings
  * @property string $fullName - virtual, prefix get and first letter upper then call method getFullName()
  */
 class User extends \Salamium\Database\Table\Entity
@@ -55,17 +45,64 @@ class User extends \Salamium\Database\Table\Entity
 		return trim($this->name . ' ' . $this->surname);
 	}
 
+	public function getSettings()
+	{
+	   return $this->ref('user_settings');
+	}
+
 }
 
+```
+### UserSettings
+```php
+<?php
+
+namespace Entity;
+
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property \Datetime $reg_date
+ * @property int $login_count
+ */
+class UserSettings extends \Salamium\Database\Table\Entity
+{
+
+}
+```
+
+### Example
+```php
+$user = $context->table('users')->where('id', 1)->fetch();
+dump($user instanceof Entity\User); // TRUE
+dump($user->settings); // Entity\UserSettings
+```
+
+## Repository
+
+The Repository object provides very nice and easy [API](src/Repository.php) for CRUD with tables. One repository is for one table. It is't necessary for entity. Feature is provides [transaction](src/Transaction.php) by method **getTransaction()**.
+
+**TIP** Create own BaseRepository whose extends.
+
+```php
+<?php
+
+namespace Repository;
+
+class Users extends \Salamium\Database\Repository // or your BaseRepository extended \Salamium\Database\Repository
+{
+    // own methods for manipulation
+}
 ```
 
 Only repository are need to register by neon.
 ```neon
 services:
-	- Repository\Users('users') # table name
+	- Repository\Users('users') # parameter is table name
 ```
 
-Your new repository has easy [API](src/Repository.php) and provide transaction.
+# Trait Extension
+In this [directory](src/Extension/) are extension written like trait for Repository.
 
 This extension support static data saved in database stored in cache.
 
