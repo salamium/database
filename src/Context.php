@@ -17,7 +17,7 @@ class Context extends ND\Context
 	/** @var Transaction */
 	private $transaction;
 
-	public function __construct(ND\Connection $connection, ND\IStructure $structure, ConventionsInterface $conventions = NULL, Caching\IStorage $cacheStorage = NULL)
+	public function __construct(ND\Connection $connection, ND\IStructure $structure, Conventions\IConventions $conventions = NULL, Caching\IStorage $cacheStorage = NULL)
 	{
 		parent::__construct($connection, $structure, $conventions, $cacheStorage);
 		$this->cacheStorage = $cacheStorage;

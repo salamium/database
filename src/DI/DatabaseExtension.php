@@ -43,7 +43,7 @@ class DatabaseExtension extends CompilerExtension
 			if ($definition->getClass() === \Nette\Database\Context::class) {
 				$arguments = $definition->getFactory()->arguments;
 
-				if (!$arguments[2]->getClass() instanceof Database\ConventionsInterface) {
+				if (!$arguments[2]->getClass() instanceof Database\Conventions\IConventions) {
 					$arguments[2] = $convention;
 				}
 

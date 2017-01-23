@@ -5,7 +5,7 @@ namespace Salamium\Database\Conventions;
 use Salamium\Database,
 	Nette\Database as ND;
 
-class Convention implements Database\ConventionsInterface
+class Convention implements IConventions
 {
 
 	/** @var string */

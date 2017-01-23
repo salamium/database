@@ -1,10 +1,10 @@
 <?php
 
-namespace Salamium\Database;
+namespace Salamium\Database\Conventions;
 
 use Nette\Database as ND;
 
-interface ConventionsInterface extends ND\IConventions
+interface IConventions extends ND\IConventions
 {
 
 	/**
