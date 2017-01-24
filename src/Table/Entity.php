@@ -25,8 +25,7 @@ abstract class Entity extends \Nette\Database\Table\ActiveRow
 		}
 
 		if (!isset(self::$map[static::class][$key])) {
-			$method = self::protpertyToMethod($key);
-			self::$map[static::class][$key] = $method;
+			self::$map[static::class][$key] = $method = self::protpertyToMethod($key);
 			if (!method_exists($this, $method)) {
 				self::$map[static::class][$key] = FALSE;
 			}

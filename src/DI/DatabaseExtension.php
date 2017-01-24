@@ -9,7 +9,6 @@ class DatabaseExtension extends CompilerExtension
 {
 
 	public $defaults = [
-		'enityNamespace' => '',
 		'entityMap' => []
 	];
 
@@ -29,11 +28,29 @@ class DatabaseExtension extends CompilerExtension
 
 		// convention
 		$convention = $builder->addDefinition($this->prefix('convention'))
-			->setClass(Database\Conventions\Convention::class, [$this->prefix('@netteStaticConventions'), $config['enityNamespace'], $config['entityMap']]);
+			->setClass(Database\Conventions\Convention::class, [$this->prefix('@netteStaticConventions'), $config['entityMap']]);
 
 		$this->updateContext($convention);
+		$this->checkEntity($config['entityMap']);
 
 		return $builder;
+	}
+
+	private function checkEntity($entityMap)
+	{
+		$error = '';
+		foreach ($entityMap as $table => $entity) {
+			if ($entity && !class_exists($entity)) {
+				if ($error) {
+					$error .= ', ';
+				}
+				$error .= "$table: $entity";
+			}
+		}
+
+		if ($error) {
+			throw new Database\InvalidArgumentException('In your entityMap is defined entity whose does not exists: ' . $error);
+		}
 	}
 
 	private function updateContext($convention)

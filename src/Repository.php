@@ -21,7 +21,6 @@ abstract class Repository
 	{
 		$this->table = $table;
 		$this->context = $context;
-		$this->context->getConventions()->checkEntity($table);
 	}
 
 	/**

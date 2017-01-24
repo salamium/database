@@ -11,9 +11,4 @@ interface IConventions extends ND\IConventions
 	 * @param string $table
 	 */
 	function getEntityClass($table);
-
-	/**
-	 * @param string $table
-	 */
-	function checkEntity($table);
 }

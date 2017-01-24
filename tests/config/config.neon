@@ -27,11 +27,10 @@ extensions:
 	databaseExtension: Salamium\Database\DI\DatabaseExtension
 
 databaseExtension:
-	enityNamespace: Salamium\Test\Entity
 	entityMap:
-		users: User
-		countries: Country
-		users_x_books: NULL
+		users: Salamium\Test\Entity\User
+		countries: Salamium\Test\Entity\Country
+		users_x_books: null
 
 services:
 	databaseExtension.cacheAccessor:

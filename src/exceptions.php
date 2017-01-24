@@ -8,4 +8,3 @@ class NoTransactionException extends DatabaseException {}
 
 class InvalidArgumentException extends DatabaseException {}
 
-class InvalidStateException extends DatabaseException {}
