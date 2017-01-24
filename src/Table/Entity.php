@@ -4,8 +4,8 @@ namespace Salamium\Database\Table;
 
 abstract class Entity extends \Nette\Database\Table\ActiveRow
 {
-
-	private static $map = [];
+	/** @var array */
+	private $map = [];
 
 	public function &__get($key)
 	{
@@ -20,18 +20,14 @@ abstract class Entity extends \Nette\Database\Table\ActiveRow
 
 	private function getMethod($key)
 	{
-		if (!isset(self::$map[static::class])) {
-			self::$map[static::class] = [];
-		}
-
-		if (!isset(self::$map[static::class][$key])) {
-			self::$map[static::class][$key] = $method = self::protpertyToMethod($key);
+		if (!isset($this->map[$key])) {
+			$this->map[$key] = $method = self::protpertyToMethod($key);
 			if (!method_exists($this, $method)) {
-				self::$map[static::class][$key] = FALSE;
+				$this->map[$key] = FALSE;
 			}
 		}
 
-		return self::$map[static::class][$key];
+		return $this->map[$key];
 	}
 
 	public static function protpertyToMethod($field)
