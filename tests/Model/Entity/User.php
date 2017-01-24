@@ -7,9 +7,15 @@ namespace Salamium\Test\Entity;
  * @property string $name
  * @property string $surname
  * @property string $fullName
+ * @property Country $country
  */
 class User extends \Salamium\Database\Table\Entity
 {
+
+	public function getCountry()
+	{
+		return $this->ref('countries');
+	}
 
 	public function getFullName()
 	{

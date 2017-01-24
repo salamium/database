@@ -13,9 +13,13 @@ class RepositoryTest extends \Tester\TestCase
 	/** @var \Salamium\Test\Repository\Users */
 	private $users;
 
-	public function __construct(\Salamium\Test\Repository\Users $userRepository)
+	/** @var \Salamium\Test\Repository\Countries */
+	private $countries;
+
+	public function __construct(\Salamium\Test\Repository\Users $users, \Salamium\Test\Repository\Countries $countries)
 	{
-		$this->users = $userRepository;
+		$this->users = $users;
+		$this->countries = $countries;
 	}
 
 	protected function setUp()
@@ -26,6 +30,25 @@ class RepositoryTest extends \Tester\TestCase
 	protected function tearDown()
 	{
 		$this->users->getTransaction()->rollback();
+	}
+
+	public function testEntity()
+	{
+		$country = $this->countries->insert([
+			'name' => 'CZ'
+		]);
+
+		/* @var $entity \Salamium\Test\Entity\User */
+		$entity = $this->users->insert([
+			'name' => 'Milan',
+			'surname' => 'h4kuna',
+			'countries_id' => $country->id
+		]);
+		Assert::true($entity instanceof Salamium\Test\Entity\User);
+		$user = $this->users->fetch($entity->id);
+		Assert::true($user instanceof Salamium\Test\Entity\User);
+		Assert::true($user->country instanceof Salamium\Test\Entity\Country);
+		Assert::same('CZ', $user->country->name); // $user->countries is possible (default by nette)
 	}
 
 	public function testFetch()
@@ -75,4 +98,4 @@ class RepositoryTest extends \Tester\TestCase
 
 }
 
-(new RepositoryTest($container->getByType(Salamium\Test\Repository\Users::class)))->run();
+(new RepositoryTest($container->getByType(Salamium\Test\Repository\Users::class), $container->getByType(Salamium\Test\Repository\Countries::class)))->run();
