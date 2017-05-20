@@ -78,13 +78,9 @@ abstract class Repository
 	 * @param mixed $id
 	 * @return Table\Selection
 	 */
-	public function find($id = NULL)
+	public function find($id)
 	{
-		$sql = $this->createSelection();
-		if ($id !== NULL) {
-			$sql->where($this->getPrimary(), $id);
-		}
-		return $sql;
+		return $this->createSelection()->where($this->getPrimary(), $id);
 	}
 
 	/**
@@ -93,7 +89,7 @@ abstract class Repository
 	 */
 	public function findBy(array $condition)
 	{
-		$sql = $this->find();
+		$sql = $this->createSelection();
 		foreach ($this->prepareCondition($condition) as $column => $value) {
 			$sql->where($column, $value);
 		}
@@ -106,7 +102,7 @@ abstract class Repository
 	 */
 	public function insert($data)
 	{
-		return $this->find()->insert($this->prepareData($data));
+		return $this->createSelection()->insert($this->prepareData($data));
 	}
 
 	/**
@@ -125,13 +121,17 @@ abstract class Repository
 	}
 
 	/**
-	 * @param string $columns
+	 * @param string|NULL $columns
 	 * @param mixed $args
 	 * @return Table\Selection
 	 */
-	public function select($columns, ...$args)
+	public function select($columns = NULL, ...$args)
 	{
-		return $this->find()->select($columns, ...$args);
+		$sql = $this->createSelection();
+		if ($columns !== NULL) {
+			$sql->select($columns, ...$args);
+		}
+		return $sql;
 	}
 
 	/**
