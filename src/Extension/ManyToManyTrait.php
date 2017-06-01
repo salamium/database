@@ -14,7 +14,7 @@ trait ManyToManyTrait
 	{
 		$cR = key($columnR);
 		$newValues = (array) current($columnR);
-		$exists = $this->find()->where(key($columnL), current($columnL))->fetchPairs($cR, $cR);
+		$exists = $this->select()->where(key($columnL), current($columnL))->fetchPairs($cR, $cR);
 		$delete = array_diff($exists, $newValues);
 
 		$insert = [];
