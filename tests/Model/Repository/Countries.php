@@ -2,8 +2,10 @@
 
 namespace Salamium\Test\Repository;
 
-class Countries extends RepositoryCache
+class Countries extends \Salamium\Database\Repository
 {
+
+	use \Salamium\Database\Extension\ListCacheTrait;
 
 	protected function loadDialItems()
 	{

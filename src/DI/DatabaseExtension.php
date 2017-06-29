@@ -69,4 +69,27 @@ class DatabaseExtension extends CompilerExtension
 		}
 	}
 
+	public function beforeCompile()
+	{
+		$builder = $this->getContainerBuilder();
+		$cache = $builder->getDefinition($this->prefix('cacheAccessor'));
+		foreach ($builder->getDefinitions() as $definition) {
+			if ($definition->getClass() && $this->isNeedCacheAccessor($definition)) {
+				$definition->addSetup('?->setCacheAccessor(?)', [$definition, $cache]);
+			}
+		}
+	}
+
+	private function isNeedCacheAccessor($definition)
+	{
+		$cache = ['Salamium\Database\Extension\ListCacheTrait', 'Salamium\Database\Extension\CacheTrait'];
+		$class = new \ReflectionClass($definition->getClass());
+		foreach ($class->getTraits() as $trait) {
+			if (in_array($trait->name, $cache)) {
+				return TRUE;
+			}
+		}
+		return FALSE;
+	}
+
 }
