@@ -102,7 +102,7 @@ services:
 ```
 
 # Trait Extension
-In this [directory](src/Extension/) are extension written like trait for Repository.
+In this [directory](src/Extension/) are extension written like trait for your class whose must extend from [Repository](src/Repository.php).
 
 This extension support static data saved in database stored in cache.
 

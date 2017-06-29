@@ -19,12 +19,13 @@ class CacheAccessor
 	}
 
 	/** @return Caching\Cache */
-	public function get()
+	public function get($table)
 	{
-		if ($this->cache === NULL) {
-			$this->cache = new Caching\Cache($this->storage, 'salamium.database');
+		$key = 'salamium.database.' . $table;
+		if (!isset($this->cache[$key])) {
+			$this->cache[$key] = new Caching\Cache($this->storage, $key);
 		}
-		return $this->cache;
+		return $this->cache[$key];
 	}
 
 }

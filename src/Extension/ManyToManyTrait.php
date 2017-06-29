@@ -2,6 +2,11 @@
 
 namespace Salamium\Database\Extension;
 
+/**
+ * If you have optional relation m:n.
+ * For example users hobbies.
+ * He has many choise and can change it.
+ */
 trait ManyToManyTrait
 {
 

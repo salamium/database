@@ -4,30 +4,24 @@ namespace Salamium\Database\Extension;
 
 use Nette\Caching as NC;
 
+/**
+ * If you need cache all table like dial data, for example list of countries.
+ */
 trait ListCacheTrait
 {
 
-	/** @var NC\Cache; */
-	protected $cache;
+	use CacheTrait;
 
 	/** @var string */
 	private $idCache;
 
-	public function setCache(Caching\CacheAccessor $cacheAccessor)
-	{
-		$this->cache = $cacheAccessor->get()->derive($this->getGlobalTag());
-	}
-
 	public function getItems()
 	{
-		if ($this->cache === NULL) {
-			throw new InvalidStateException('Call setCache() for enable caching.');
-		}
-		$data = $this->cache->load('items');
+		$data = $this->getCache()->load('items');
 		if ($data !== NULL) {
 			return $data;
 		}
-		return $this->cache->save('items', $this->loadDialItems(), $this->addGlobalTag([]));
+		return $this->getCache()->save('items', $this->loadDialItems(), $this->addGlobalTag([]));
 	}
 
 	public function deleteBy(array $condition)
@@ -64,10 +58,7 @@ trait ListCacheTrait
 
 	protected function clearCache($data, $condition)
 	{
-		if ($this->cache === NULL) {
-			return;
-		}
-		$this->cache->clean($this->addGlobalTag([]));
+		$this->getCache()->clean($this->addGlobalTag([]));
 	}
 
 	private function getGlobalTag()
@@ -81,7 +72,6 @@ trait ListCacheTrait
 
 	protected function prepareConditions(& $conditions)
 	{
-
 	}
 
 	/**
