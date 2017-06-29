@@ -21,6 +21,7 @@ abstract class Repository
 	{
 		$this->table = $table;
 		$this->context = $context;
+		$this->construct();
 	}
 
 	/**
@@ -184,6 +185,13 @@ abstract class Repository
 	protected function prepareCondition($data)
 	{
 		return $data;
+	}
+
+	/**
+	 * Use in trait if you need anything set.
+	 */
+	protected function construct()
+	{
 	}
 
 	/** @return string */
