@@ -1,3 +1,6 @@
+[![Downloads this Month](https://img.shields.io/packagist/dm/salamium/database.svg)](https://packagist.org/packages/salamium/database)
+[![Latest stable](https://img.shields.io/packagist/v/salamium/database.svg)](https://packagist.org/packages/salamium/database)
+
 Simple extension for nette/database.
 -----------------------------------
 
