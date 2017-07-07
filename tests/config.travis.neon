@@ -1,0 +1,12 @@
+parameters:
+	global:
+		host: 127.0.0.1
+		dbname: salamium_test
+
+database:
+	mysql:
+		user: root
+		password:
+	postgres:
+		user: postgres
+		password:
