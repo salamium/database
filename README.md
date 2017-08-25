@@ -18,9 +18,10 @@ extensions:
 	databaseExtension: Salamium\Database\DI\DatabaseExtension
 
 databaseExtension:
-	entityMap:
-		# table in database: Entity name with namespace
-		users: Entity\User
+    entityMap:
+        default: # name of connection, must be same like defined database connection
+            # table in database: Entity name with namespace
+            users: Entity\User
 ```
 
 ## Entity

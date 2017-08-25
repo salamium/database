@@ -28,9 +28,10 @@ extensions:
 
 databaseExtension:
 	entityMap:
-		users: Salamium\Test\Entity\User
-		countries: Salamium\Test\Entity\Country
-		users_x_books: null
+		mysql:
+			users: Salamium\Test\Entity\User
+			countries: Salamium\Test\Entity\Country
+			users_x_books: null
 
 services:
 	databaseExtension.cacheAccessor:

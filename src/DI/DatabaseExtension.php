@@ -3,68 +3,50 @@
 namespace Salamium\Database\DI;
 
 use Salamium\Database,
-	Nette\DI\CompilerExtension;
+	Nette\Database AS ND,
+	Nette\DI AS NDI;
 
-class DatabaseExtension extends CompilerExtension
+class DatabaseExtension extends NDI\CompilerExtension
 {
 
-	public $defaults = [
-		'entityMap' => []
+	private $defaults = [
+		'entityMap' => [],
+		'conventionClass' => Database\Conventions\Convention::class
 	];
 
 	public function loadConfiguration()
 	{
+		$this->config += $this->defaults;
 		$builder = $this->getContainerBuilder();
-		$config = $this->validateConfig($this->defaults);
 
 		// cacheAccessor
 		$builder->addDefinition($this->prefix('cacheAccessor'))
 			->setClass(Database\Extension\Caching\CacheAccessor::class);
 
-		// netteStaticConventions
-		$builder->addDefinition($this->prefix('netteStaticConventions'))
-			->setClass(\Nette\Database\Conventions\StaticConventions::class)
-			->setAutowired(FALSE);
-
-		// convention
-		$convention = $builder->addDefinition($this->prefix('convention'))
-			->setClass(Database\Conventions\Convention::class, [$this->prefix('@netteStaticConventions'), $config['entityMap']]);
-
-		$this->updateContext($convention);
-		$this->checkEntity($config['entityMap']);
+		$this->checkEntityMap();
 
 		return $builder;
 	}
 
-	private function checkEntity($entityMap)
+	private function checkEntityMap()
 	{
-		$error = '';
-		foreach ($entityMap as $table => $entity) {
-			if ($entity && !class_exists($entity)) {
-				if ($error) {
-					$error .= ', ';
+		if (!is_array(current($this->config['entityMap']))) {
+			$this->config['entityMap'] = ['default' => $this->config['entityMap']];
+		}
+
+		foreach ($this->config['entityMap'] as $name => $entities) {
+			$error = '';
+			foreach ($entities as $table => $entity) {
+				if ($entity && !class_exists($entity)) {
+					if ($error) {
+						$error .= ', ';
+					}
+					$error .= "$table: $entity";
 				}
-				$error .= "$table: $entity";
 			}
-		}
 
-		if ($error) {
-			throw new Database\InvalidArgumentException('In your entityMap is defined entity whose does not exists: ' . $error);
-		}
-	}
-
-	private function updateContext($convention)
-	{
-		foreach ($this->getContainerBuilder()->getDefinitions() as $definition) {
-			/* @var $definition \Nette\DI\ServiceDefinition */
-			if ($definition->getClass() === \Nette\Database\Context::class) {
-				$arguments = $definition->getFactory()->arguments;
-
-				if (!$arguments[2]->getClass() instanceof Database\Conventions\IConventions) {
-					$arguments[2] = $convention;
-				}
-
-				$definition->setClass(Database\Context::class, $arguments);
+			if ($error) {
+				throw new Database\InvalidArgumentException('In your entityMap is defined entity whose does not exists: ' . $error);
 			}
 		}
 	}
@@ -72,11 +54,43 @@ class DatabaseExtension extends CompilerExtension
 	public function beforeCompile()
 	{
 		$builder = $this->getContainerBuilder();
+		$this->updateContext($builder);
+
 		$cache = $builder->getDefinition($this->prefix('cacheAccessor'));
 		foreach ($builder->getDefinitions() as $definition) {
 			if ($definition->getClass() && $this->isNeedCacheAccessor($definition)) {
 				$definition->addSetup('?->setCacheAccessor(?)', [$definition, $cache]);
 			}
+		}
+	}
+
+	private function updateContext(NDI\ContainerBuilder $builder)
+	{
+		$i = 0;
+		foreach ($builder->getDefinitions() as $name => $definition) {
+			/* @var $definition NDI\ServiceDefinition */
+			if ($definition->getClass() !== ND\Context::class) {
+				continue;
+			}
+			$databaseName = self::getDatabaseName($name);
+			if (!isset($this->config['entityMap'][$databaseName])) {
+				$this->config['entityMap'][$databaseName] = [];
+			}
+
+			$arguments = $definition->getFactory()->arguments;
+			if (!isset($arguments[2])) {
+				$netteConvention = $builder->addDefinition($this->prefix('nette.convention.' . $i))
+					->setClass(ND\Conventions\StaticConventions::class);
+				$convention = $this->createConvention($builder, $i, $netteConvention, $databaseName);
+			} elseif (self::isIConventions($arguments[2]->getClass(), Database\Conventions\IConventions::class)) {
+				$convention = $arguments[2];
+			} elseif (self::isIConventions($arguments[2]->getClass(), ND\IConventions::class)) {
+				$convention = $this->createConvention($builder, $i, $arguments[2], $databaseName);
+			}
+
+			$arguments[2] = $convention;
+			$definition->setClass(Database\Context::class, $arguments);
+			++$i;
 		}
 	}
 
@@ -92,4 +106,23 @@ class DatabaseExtension extends CompilerExtension
 		return FALSE;
 	}
 
+	private function createConvention($builder, $i, $convention, $databaseName)
+	{
+		return $builder->addDefinition($this->prefix('convention.' . $i))
+			->setClass($this->config['conventionClass'], [
+				$convention,
+				$this->config['entityMap'][$databaseName]
+			]);
+	}
+
+	private static function getDatabaseName($name)
+	{
+		return explode('.', $name)[1];
+	}
+
+	private static function isIConventions($class, $interface)
+	{
+		$interfaces = class_implements($class);
+		return isset($interfaces[$interface]);
+	}
 }

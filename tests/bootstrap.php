@@ -7,7 +7,7 @@ include __DIR__ . '/RunTest.php';
 
 $configurator = new Nette\Configurator();
 
-$tmp = __DIR__ . '/temp';
+$tmp = __DIR__ . '/temp/' . getmypid();
 $logDir = $tmp . '/log';
 Utils\FileSystem::createDir($logDir);
 
