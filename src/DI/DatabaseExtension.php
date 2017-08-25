@@ -54,61 +54,68 @@ class DatabaseExtension extends NDI\CompilerExtension
 	public function beforeCompile()
 	{
 		$builder = $this->getContainerBuilder();
-		$this->updateContext($builder);
-
 		$cache = $builder->getDefinition($this->prefix('cacheAccessor'));
-		foreach ($builder->getDefinitions() as $definition) {
+
+		foreach ($builder->getDefinitions() as $name => $definition) {
+			if ($definition->getClass() === ND\Context::class) {
+				$this->updateContext($builder, $name, $definition);
+			}
 			if ($definition->getClass() && $this->isNeedCacheAccessor($definition)) {
 				$definition->addSetup('?->setCacheAccessor(?)', [$definition, $cache]);
 			}
 		}
 	}
 
-	private function updateContext(NDI\ContainerBuilder $builder)
+	private function updateContext(NDI\ContainerBuilder $builder, $name, $definition)
 	{
-		$i = 0;
-		foreach ($builder->getDefinitions() as $name => $definition) {
-			/* @var $definition NDI\ServiceDefinition */
-			if ($definition->getClass() !== ND\Context::class) {
-				continue;
-			}
-			$databaseName = self::getDatabaseName($name);
-			if (!isset($this->config['entityMap'][$databaseName])) {
-				$this->config['entityMap'][$databaseName] = [];
-			}
-
-			$arguments = $definition->getFactory()->arguments;
-			if (!isset($arguments[2])) {
-				$netteConvention = $builder->addDefinition($this->prefix('nette.convention.' . $i))
-					->setClass(ND\Conventions\StaticConventions::class);
-				$convention = $this->createConvention($builder, $i, $netteConvention, $databaseName);
-			} elseif (self::isIConventions($arguments[2]->getClass(), Database\Conventions\IConventions::class)) {
-				$convention = $arguments[2];
-			} elseif (self::isIConventions($arguments[2]->getClass(), ND\IConventions::class)) {
-				$convention = $this->createConvention($builder, $i, $arguments[2], $databaseName);
-			}
-
-			$arguments[2] = $convention;
-			$definition->setClass(Database\Context::class, $arguments);
-			++$i;
+		$databaseName = self::getDatabaseName($name);
+		if (!isset($this->config['entityMap'][$databaseName])) {
+			$this->config['entityMap'][$databaseName] = [];
 		}
+
+		$arguments = $definition->getFactory()->arguments;
+		if (!isset($arguments[2])) {
+			$netteConvention = $builder->addDefinition($this->prefix('nette.convention.' . $databaseName))
+				->setClass(ND\Conventions\StaticConventions::class);
+			$convention = $this->createConvention($builder, $netteConvention, $databaseName);
+		} elseif (self::isIConventions($arguments[2]->getClass(), Database\Conventions\IConventions::class)) {
+			$convention = $arguments[2];
+		} elseif (self::isIConventions($arguments[2]->getClass(), ND\IConventions::class)) {
+			$convention = $this->createConvention($builder, $arguments[2], $databaseName);
+		} else {
+			throw new Database\InvalidArgumentException('Unknown Conventions: ' . $arguments[2]->getClass());
+		}
+
+		$arguments[2] = $convention;
+		$definition->setClass(Database\Context::class, $arguments);
 	}
 
 	private function isNeedCacheAccessor($definition)
 	{
-		$cache = ['Salamium\Database\Extension\ListCacheTrait', 'Salamium\Database\Extension\CacheTrait'];
 		$class = new \ReflectionClass($definition->getClass());
+		return $this->checkClass4Accessor($class);
+	}
+
+	private function checkClass4Accessor(\ReflectionClass $class)
+	{
+		static $cache = ['Salamium\Database\Extension\ListCacheTrait', 'Salamium\Database\Extension\CacheTrait'];
+
 		foreach ($class->getTraits() as $trait) {
 			if (in_array($trait->name, $cache)) {
 				return TRUE;
 			}
 		}
+
+		if ($class->getParentClass()) {
+			return $this->checkClass4Accessor($class->getParentClass());
+		}
+
 		return FALSE;
 	}
 
-	private function createConvention($builder, $i, $convention, $databaseName)
+	private function createConvention($builder, $convention, $databaseName)
 	{
-		return $builder->addDefinition($this->prefix('convention.' . $i))
+		return $builder->addDefinition($this->prefix('convention.' . $databaseName))
 			->setClass($this->config['conventionClass'], [
 				$convention,
 				$this->config['entityMap'][$databaseName]
