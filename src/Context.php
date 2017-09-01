@@ -29,6 +29,21 @@ class Context extends ND\Context
 		return new Table\Selection($this, $this->getConventions(), $table, $this->cacheStorage);
 	}
 
+	public function rollBack()
+	{
+		$this->getTransaction()->rollback();
+	}
+
+	public function commit()
+	{
+		$this->getTransaction()->commit();
+	}
+
+	public function beginTransaction()
+	{
+		$this->getTransaction()->begin();
+	}
+
 	/** @return Transaction */
 	public function getTransaction()
 	{
