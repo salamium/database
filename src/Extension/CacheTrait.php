@@ -5,7 +5,7 @@ namespace Salamium\Database\Extension;
 use Nette\Caching as NC;
 
 /**
- * If you use Nette, class DatabaseExtension automaticaly call setter.
+ * If you use Nette, class DatabaseExtension automatically call setter.
  *
  * Do you need cache in repository divided by tables?
  */
@@ -20,7 +20,7 @@ trait CacheTrait
 		$this->cacheAccessor = $cacheAccessor;
 	}
 
-	/** @var NC\Cache */
+	/** @return NC\Cache */
 	protected function getCache()
 	{
 		return $this->cacheAccessor->get($this->table);

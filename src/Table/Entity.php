@@ -21,7 +21,7 @@ abstract class Entity extends \Nette\Database\Table\ActiveRow
 	private function getMethod($key)
 	{
 		if (!isset($this->map[$key])) {
-			$this->map[$key] = $method = self::protpertyToMethod($key);
+			$this->map[$key] = $method = self::propertyToMethod($key);
 			if (!method_exists($this, $method)) {
 				$this->map[$key] = FALSE;
 			}
@@ -30,7 +30,7 @@ abstract class Entity extends \Nette\Database\Table\ActiveRow
 		return $this->map[$key];
 	}
 
-	public static function protpertyToMethod($field)
+	public static function propertyToMethod($field)
 	{
 		return 'get' . ucfirst($field);
 	}

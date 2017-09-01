@@ -54,23 +54,25 @@ abstract class Repository
 	/**
 	 * @param mixed $id
 	 * @param string $column
+	 * @param mixed $params
 	 * @return Table\Entity
 	 */
-	public function fetch($id, $column = NULL, ...$args)
+	public function fetch($id, $column = NULL, ...$params)
 	{
-		return $this->fetchBy([$this->getPrimary() => $id], $column, ...$args);
+		return $this->fetchBy([$this->getPrimary() => $id], $column, ...$params);
 	}
 
 	/**
 	 * @param array $condition
 	 * @param string $column
+	 * @param mixed $params
 	 * @return Table\Entity
 	 */
-	public function fetchBy(array $condition, $column = NULL, ...$args)
+	public function fetchBy(array $condition, $column = NULL, ...$params)
 	{
 		$sql = $this->findBy($condition);
 		if ($column) {
-			$sql->select($column, ...$args);
+			$sql->select($column, ...$params);
 		}
 		return $sql->fetch();
 	}

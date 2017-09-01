@@ -1,5 +1,6 @@
-vendor/
-nbproject/
+/.idea/
+/vendor/
+/nbproject/
 /**/output/
 composer.lock
 *.local.neon

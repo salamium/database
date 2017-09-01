@@ -18,7 +18,10 @@ class CacheAccessor
 		$this->storage = $storage;
 	}
 
-	/** @return Caching\Cache */
+	/**
+	 * @param string $table
+	 * @return Caching\Cache
+	 */
 	public function get($table)
 	{
 		$key = 'salamium.database.' . $table;

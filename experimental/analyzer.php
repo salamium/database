@@ -322,7 +322,7 @@ foreach ($repositories as $table => $repository) {
 	$methods = getMethods($reflection);
 	foreach (array_diff_key($phpTypes, $dbTypes) as $type) {
 		/* @var $type Type */
-		$findMethod = \Salamium\Database\Table\Entity::protpertyToMethod($type->field);
+		$findMethod = \Salamium\Database\Table\Entity::propertyToMethod($type->field);
 		if (isset($methods[$findMethod])) {
 			$type->isVirtual = TRUE;
 		} else {
