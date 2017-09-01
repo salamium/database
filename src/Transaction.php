@@ -53,6 +53,23 @@ class Transaction
 		return --$this->id;
 	}
 
+	/**
+	 * @param \Closure $callback
+	 * @return mixed
+	 */
+	public function transaction(\Closure $callback)
+	{
+		try {
+			$this->begin();
+			$return = $callback();
+			$this->commit();
+			return $return;
+		} catch (\Exception $e) {
+			$this->rollback();
+			throw $e;
+		}
+	}
+
 	/** @return int Id */
 	public function inTransaction()
 	{
