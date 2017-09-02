@@ -48,7 +48,7 @@ abstract class Repository
 	 */
 	public function exists(array $condition)
 	{
-		return $this->findBy($condition, '1 AS exists')->limit(1)->fetch();
+		return $this->findBy($condition)->select('1 AS exists')->limit(1)->fetch();
 	}
 
 	/**
