@@ -58,15 +58,15 @@ class RepositoryTest extends \Tester\TestCase
 			'surname' => 'h4kuna'
 		]);
 
-		/* @var $entity \Salamium\Test\Entity\User */
-		Assert::same('Milan1 h4kuna', $entity->fullName);
-		Assert::same('Milan1', $entity->name);
+		/* @var $entity Salamium\Test\Entity\User */
+		Assert::same('Milan h4kuna', $entity->fullName);
+		Assert::same('Milan', $entity->name);
 		Assert::same('h4kuna', $entity->surname);
 		Assert::true(is_int($entity->id));
 
-		/* @var $entity2 \Salamium\Test\Entity\User */
+		/* @var $entity2 Salamium\Test\Entity\User */
 		$entity2 = $this->users->fetch($entity->id, 'name, ? AS surname', 'foo');
-		Assert::same('Milan1 foo', $entity2->fullName);
+		Assert::same('Milan foo', $entity2->fullName);
 	}
 
 	public function testSave()
@@ -74,8 +74,8 @@ class RepositoryTest extends \Tester\TestCase
 		$entity = $this->users->save(['surname' => 'h4kuna'], ['name' => 'Foo']);
 		$entity2 = $this->users->save(['surname' => 'h4kuna'], ['name' => 'Bar']);
 		Assert::same($entity->id, $entity2->id);
-		Assert::same('Foo1', $entity->name);
-		Assert::same('Bar1', $entity2->name);
+		Assert::same('Foo', $entity->name);
+		Assert::same('Bar', $entity2->name);
 	}
 
 	public function testDelete()
@@ -94,6 +94,17 @@ class RepositoryTest extends \Tester\TestCase
 
 		Assert::false($this->users->exists(['id' => -1]));
 		Assert::same($this->users->exists(['id' => $entity->id])->id, $entity->id);
+	}
+
+	public function testExistsStrict()
+	{
+		$entity = $this->users->insert([
+			'name' => 'Milan',
+			'surname' => 'h4kuna'
+		]);
+
+		Assert::false($this->users->existsStrict(['id' => -1]));
+		Assert::true($this->users->existsStrict(['id' => $entity->id]));
 	}
 
 }

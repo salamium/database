@@ -48,7 +48,16 @@ abstract class Repository
 	 */
 	public function exists(array $condition)
 	{
-		return $this->findBy($condition)->select('1 AS exists')->limit(1)->fetch();
+		return $this->findBy($condition)->limit(1)->fetch();
+	}
+
+	/**
+	 * @param array $condition
+	 * @return bool
+	 */
+	public function existsStrict(array $condition)
+	{
+		return (bool) $this->findBy($condition)->select('1 AS exists')->limit(1)->fetch();
 	}
 
 	/**
@@ -93,7 +102,7 @@ abstract class Repository
 	public function findBy(array $condition)
 	{
 		$sql = $this->createSelection();
-		foreach ($this->prepareCondition($condition) as $column => $value) {
+		foreach ($condition as $column => $value) {
 			$sql->where($column, $value);
 		}
 		return $sql;
@@ -105,7 +114,7 @@ abstract class Repository
 	 */
 	public function insert($data)
 	{
-		return $this->createSelection()->insert($this->prepareData($data));
+		return $this->createSelection()->insert($data);
 	}
 
 	/**
@@ -116,9 +125,9 @@ abstract class Repository
 	 */
 	public function save(array $condition, array $data)
 	{
-		if ($this->exists($condition)) {
-			$this->updateBy($condition, $data);
-			return $this->fetchBy($condition);
+		if ($entity = $this->exists($condition)) {
+			$entity->update($data);
+			return $entity;
 		}
 		return $this->insert($data + $condition);
 	}
@@ -154,7 +163,7 @@ abstract class Repository
 	 */
 	public function updateBy(array $condition, $data)
 	{
-		return $this->findBy($condition)->update($this->prepareData($data));
+		return $this->findBy($condition)->update($data);
 	}
 
 	/** @return Transaction */
@@ -167,26 +176,6 @@ abstract class Repository
 	protected function createSelection()
 	{
 		return $this->context->table($this->table);
-	}
-
-	/**
-	 * Change data before insert and update.
-	 * @param array $data
-	 * @return array
-	 */
-	protected function prepareData($data)
-	{
-		return $data;
-	}
-
-	/**
-	 * Change conditions before read, update and delete.
-	 * @param array $data
-	 * @return array
-	 */
-	protected function prepareCondition($data)
-	{
-		return $data;
 	}
 
 	/**
