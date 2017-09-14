@@ -31,17 +31,17 @@ class Context extends ND\Context
 
 	public function rollBack()
 	{
-		$this->getTransaction()->rollback();
+		return $this->getTransaction()->rollBack();
 	}
 
 	public function commit()
 	{
-		$this->getTransaction()->commit();
+		return $this->getTransaction()->commit();
 	}
 
 	public function beginTransaction()
 	{
-		$this->getTransaction()->begin();
+		return $this->getTransaction()->begin();
 	}
 
 	/** @return Transaction */

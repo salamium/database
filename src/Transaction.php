@@ -43,7 +43,7 @@ class Transaction
 	}
 
 	/** @return int Id of point */
-	public function rollback()
+	public function rollBack()
 	{
 		if ($this->checkTransaction() > 1) {
 			$this->connection->query('ROLLBACK TO ' . $this->getSavepoint());
@@ -65,7 +65,7 @@ class Transaction
 			$this->commit();
 			return $return;
 		} catch (\Exception $e) {
-			$this->rollback();
+			$this->rollBack();
 			throw $e;
 		}
 	}

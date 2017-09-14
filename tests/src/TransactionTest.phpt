@@ -4,7 +4,7 @@ namespace Salamium\Database;
 
 use Tester\Assert;
 
-require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/../bootstrap-container.php';
 
 class TransactionTest extends \Tester\TestCase
 {
@@ -19,14 +19,14 @@ class TransactionTest extends \Tester\TestCase
 
 	public function testBasic()
 	{
-		$transaction = $this->context->getTransaction();
-		Assert::equal(1, $transaction->begin());
+		$transaction = $this->context;
+		Assert::equal(1, $transaction->beginTransaction());
 		Assert::equal(0, $transaction->commit());
 		$this->checkNotInTransaction();
 
-		Assert::equal(1, $transaction->begin());
+		Assert::equal(1, $transaction->beginTransaction());
 		// fail
-		Assert::equal(0, $transaction->rollback());
+		Assert::equal(0, $transaction->rollBack());
 		$this->checkNotInTransaction();
 	}
 
@@ -41,7 +41,7 @@ class TransactionTest extends \Tester\TestCase
 
 		Assert::equal(1, $transaction->begin());
 		Assert::equal(2, $transaction->begin());
-		Assert::equal(1, $transaction->rollback());
+		Assert::equal(1, $transaction->rollBack());
 		Assert::equal(0, $transaction->commit());
 		$this->checkNotInTransaction();
 	}
@@ -54,7 +54,7 @@ class TransactionTest extends \Tester\TestCase
 		}, NoTransactionException::class);
 
 		Assert::exception(function() use ($transaction) {
-			$transaction->rollback();
+			$transaction->rollBack();
 		}, NoTransactionException::class);
 	}
 
@@ -66,5 +66,5 @@ class TransactionTest extends \Tester\TestCase
 }
 
 RunTest::run(function($context) {
-	return new TransactionTest($context);
+	(new TransactionTest($context))->run();
 });
