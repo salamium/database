@@ -5,3 +5,4 @@
 /composer.lock
 *.local.neon
 *~
+coverage.*
