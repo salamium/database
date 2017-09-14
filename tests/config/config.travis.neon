@@ -1,0 +1,9 @@
+database:
+	mysql:
+		user: root
+		password:
+	postgres:
+		user: postgres
+		password:
+	sqlite:
+		dsn: 'sqlite:memory:'

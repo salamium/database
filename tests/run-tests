@@ -7,7 +7,7 @@ composer install
 cd -
 
 if [ $# -eq 0 ]; then
-    args=$DIR/src
+    args="php $DIR/src"
 else
     args=$@
 fi

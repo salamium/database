@@ -28,6 +28,21 @@ class DatabaseExtension extends NDI\CompilerExtension
 		return $builder;
 	}
 
+	public function beforeCompile()
+	{
+		$builder = $this->getContainerBuilder();
+		$cache = $builder->getDefinition($this->prefix('cacheAccessor'));
+
+		foreach ($builder->getDefinitions() as $name => $definition) {
+			if ($definition->getClass() === ND\Context::class) {
+				$this->updateContext($builder, $name, $definition);
+			}
+			if ($definition->getClass() && $this->isNeedCacheAccessor($definition)) {
+				$definition->addSetup('?->setCacheAccessor(?)', [$definition, $cache]);
+			}
+		}
+	}
+
 	private function checkEntityMap()
 	{
 		if (!is_array(current($this->config['entityMap']))) {
@@ -47,21 +62,6 @@ class DatabaseExtension extends NDI\CompilerExtension
 
 			if ($error) {
 				throw new Database\InvalidArgumentException('In your entityMap is defined entity whose does not exists: ' . $error);
-			}
-		}
-	}
-
-	public function beforeCompile()
-	{
-		$builder = $this->getContainerBuilder();
-		$cache = $builder->getDefinition($this->prefix('cacheAccessor'));
-
-		foreach ($builder->getDefinitions() as $name => $definition) {
-			if ($definition->getClass() === ND\Context::class) {
-				$this->updateContext($builder, $name, $definition);
-			}
-			if ($definition->getClass() && $this->isNeedCacheAccessor($definition)) {
-				$definition->addSetup('?->setCacheAccessor(?)', [$definition, $cache]);
 			}
 		}
 	}
