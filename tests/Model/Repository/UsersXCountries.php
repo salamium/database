@@ -2,7 +2,7 @@
 
 namespace Salamium\Test\Repository;
 
-class UsersXBooks extends \Salamium\Database\Repository
+class UsersXCountries extends \Salamium\Database\Repository
 {
 
 	use \Salamium\Database\Extension\ManyToManyTrait;

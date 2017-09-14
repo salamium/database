@@ -2,10 +2,7 @@
 
 namespace Salamium\Database;
 
-use Nette,
-	Tester\Assert;
-
-$container = require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/../bootstrap-container.php';
 
 class CheckSelection extends \Tester\TestCase
 {
@@ -15,8 +12,7 @@ class CheckSelection extends \Tester\TestCase
 	 */
 	public function testSelection($pattern, $method)
 	{
-		$reflection = new \ReflectionClass(Nette\Database\Table\Selection::class);
-		Assert::same(1, preg_match('~' . preg_quote($pattern) . '~', file_get_contents($reflection->getFileName())), Nette\Database\Table\Selection::class . '::' . $method . ' was changed.');
+		RunTest::compareFile($pattern, $method);
 	}
 
 }

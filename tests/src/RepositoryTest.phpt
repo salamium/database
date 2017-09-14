@@ -3,33 +3,34 @@
 namespace Salamium\Database;
 
 use Salamium,
+	Salamium\Test\Repository,
 	Tester\Assert;
 
-require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/../bootstrap-container.php';
 
 class RepositoryTest extends \Tester\TestCase
 {
 
-	/** @var \Salamium\Test\Repository\Users */
+	/** @var Repository\Users */
 	private $users;
 
-	/** @var \Salamium\Test\Repository\Countries */
+	/** @var Repository\Countries */
 	private $countries;
 
-	public function __construct(\Salamium\Test\Repository\Users $users, \Salamium\Test\Repository\Countries $countries)
-	{
-		$this->users = $users;
-		$this->countries = $countries;
-	}
+	/** @var Repository\UsersXCountries */
+	private $usersXCountries;
 
 	protected function setUp()
 	{
+		$this->users = Environment::getByType(Repository\Users::class);
+		$this->countries = Environment::getByType(Repository\Countries::class);
+		$this->usersXCountries = Environment::getByType(Salamium\Test\Repository\UsersXCountries::class);
 		$this->users->getTransaction()->begin();
 	}
 
 	protected function tearDown()
 	{
-		$this->users->getTransaction()->rollback();
+		$this->users->getTransaction()->rollBack();
 	}
 
 	public function testEntity()
@@ -38,7 +39,7 @@ class RepositoryTest extends \Tester\TestCase
 			'name' => 'CZ'
 		]);
 
-		/* @var $entity \Salamium\Test\Entity\User */
+		/* @var $entity Salamium\Test\Entity\User */
 		$entity = $this->users->insert([
 			'name' => 'Milan',
 			'surname' => 'h4kuna',
@@ -107,6 +108,39 @@ class RepositoryTest extends \Tester\TestCase
 		Assert::true($this->users->existsStrict(['id' => $entity->id]));
 	}
 
+	public function testRelatedCountries()
+	{
+		/* @var $user Salamium\Test\Entity\User */
+		$user = $this->users->insert([
+			'name' => 'Milan',
+			'surname' => 'h4kuna'
+		]);
+
+		$country1 = $this->countries->insert([
+			'name' => 'foo',
+		]);
+
+		$country2 = $this->countries->insert([
+			'name' => 'bar',
+		]);
+
+		$this->usersXCountries->insert([
+			[
+				'users_id' => $user->id,
+				'countries_id' => $country1->id
+			],
+			[
+				'users_id' => $user->id,
+				'countries_id' => $country2->id
+			]
+		]);
+
+		foreach ($user->countries as $item) {
+			Assert::type(Salamium\Test\Entity\Country::class, $item);
+		};
+
+	}
+
 }
 
-(new RepositoryTest($container->getByType(Salamium\Test\Repository\Users::class), $container->getByType(Salamium\Test\Repository\Countries::class)))->run();
+(new RepositoryTest())->run();

@@ -1,7 +1,8 @@
 parameters:
+	sqlite: null
 	global:
-		host: localhost
-		dbname: test
+		host: 127.0.0.1
+		dbname: salamium_test
 
 database:
 	mysql:
@@ -31,7 +32,7 @@ databaseExtension:
 		mysql:
 			users: Salamium\Test\Entity\User
 			countries: Salamium\Test\Entity\Country
-			users_x_books: null
+			users_x_countries: null
 
 services:
 	databaseExtension.cacheAccessor:
@@ -39,8 +40,11 @@ services:
 
 	# Entity are loaded automaticaly
 
-	# Repository
+	# Mysql Repository
 	- Salamium\Test\Repository\Users('users')
 	- Salamium\Test\Repository\Countries('countries')
-	- Salamium\Test\Repository\UsersXBooks('users_x_books')
+	- Salamium\Test\Repository\UsersXCountries('users_x_countries')
 
+	# sqlite Repository
+	menu:
+		class: Salamium\Test\Repository\Menu('menu', @database.sqlite.context)

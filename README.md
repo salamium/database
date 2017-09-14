@@ -1,5 +1,8 @@
-[![Downloads this Month](https://img.shields.io/packagist/dm/salamium/database.svg)](https://packagist.org/packages/salamium/database)
+[![Build Status](https://travis-ci.org/salamium/database.svg?branch=master)](https://travis-ci.org/salamium/database)
 [![Latest stable](https://img.shields.io/packagist/v/salamium/database.svg)](https://packagist.org/packages/salamium/database)
+[![Downloads this Month](https://img.shields.io/packagist/dm/salamium/database.svg)](https://packagist.org/packages/salamium/database)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/salamium/database/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/salamium/database/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/salamium/database/badge.svg?branch=master)](https://coveralls.io/github/salamium/database?branch=master)
 
 Simple extension for nette/database.
 -----------------------------------

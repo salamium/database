@@ -2,30 +2,26 @@
 
 namespace Salamium\Database;
 
-use Salamium,
+use Salamium\Test\Repository,
 	Tester\Assert;
 
-$container = require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/../bootstrap-container.php';
 
 class RepositoryCacheTest extends \Tester\TestCase
 {
 
-	/** @var \Salamium\Test\Repository\Countries */
+	/** @var Repository\Countries */
 	private $countries;
-
-	public function __construct(\Salamium\Test\Repository\Countries $countryRepository)
-	{
-		$this->countries = $countryRepository;
-	}
 
 	protected function setUp()
 	{
+		$this->countries = Environment::getByType(Repository\Countries::class);
 		$this->countries->getTransaction()->begin();
 	}
 
 	protected function tearDown()
 	{
-		$this->countries->getTransaction()->rollback();
+		$this->countries->getTransaction()->rollBack();
 	}
 
 	public function testBasic()
@@ -58,4 +54,4 @@ class RepositoryCacheTest extends \Tester\TestCase
 
 }
 
-(new RepositoryCacheTest($container->getByType(Salamium\Test\Repository\Countries::class)))->run();
+(new RepositoryCacheTest)->run();

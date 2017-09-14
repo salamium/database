@@ -2,20 +2,20 @@
 
 namespace Salamium\Database;
 
-use Salamium,
+use Salamium\Test\Repository,
 	Tester\Assert;
 
-require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/../bootstrap-container.php';
 
 class TempItemTest extends \Tester\TestCase
 {
 
-	/** @var \Salamium\Test\Repository\Users */
+	/** @var Repository\Users */
 	private $users;
 
-	public function __construct(\Salamium\Test\Repository\Users $users)
+	public function __construct()
 	{
-		$this->users = $users;
+		$this->users = Environment::getByType(Repository\Users::class);
 	}
 
 	public function testBasic()
@@ -24,12 +24,21 @@ class TempItemTest extends \Tester\TestCase
 			'name' => 'Doe',
 			'surname' => 'Jou'
 		]);
+		Assert::null($this->users->fetchItem(NULL));
+
 		$user1 = $this->users->fetchItem($user->id);
 		$user2 = $this->users->fetchItem($user->id);
+		Assert::same($user1, $user2);
+
+		$this->users->update($user->id, ['name' => 'Joe']);
+		$user1 = $this->users->fetchItem($user->id);
+		Assert::notSame($user1, $user2);
+
+		$this->users->saveItem($user2);
+		$user1 = $this->users->fetchItem($user->id);
 		Assert::same($user1, $user2);
 	}
 
 }
 
-$users = $container->getByType(Salamium\Test\Repository\Users::class);
-(new TempItemTest($users))->run();
+(new TempItemTest)->run();

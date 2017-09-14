@@ -4,6 +4,12 @@ DIR=`pwd`/`dirname $0`;
 
 cd $DIR/..
 composer install
+cd -
 
-$DIR/../vendor/bin/tester -l $DIR/temp/test.log -p php $DIR -s -j 2 --colors 1 -c $DIR/config/php.ini $DIR/src
+if [ $# -eq 0 ]; then
+    args=$DIR/src
+else
+    args=$@
+fi
 
+$DIR/../vendor/bin/tester -l $DIR/temp/test.log -s -j 5 --colors 1 -c $DIR/config/php.ini -p $args

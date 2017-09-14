@@ -9,14 +9,14 @@
 		}
 	],
 	"require": {
-		"nette/database": "^2.2",
+		"nette/database": "^2.4.2",
 		"nette/bootstrap": "^2.2",
-		"nette/di": "^2.2"
+		"nette/di": "^2.2",
+		"h4kuna/data-type": "^2.1"
 	},
 	"require-dev": {
-		"salamium/testinium": "dev-master",
-		"nette/utils": "~2.3",
-		"nette/robot-loader": "^2.2"
+		"salamium/testinium": "^0.1",
+		"nette/utils": "~2.3"
 	},
 	"autoload": {
 		"psr-4": {

@@ -182,7 +182,7 @@ class DbSchema
 		$tables = $this->database->loadTables($filter);
 		$this->tables = [];
 		foreach ($tables as $original => $table) {
-			$this->tables[$original] = \Salamium\DataType\Basic\Strings::toPascal($table);
+			$this->tables[$original] = \h4kuna\DataType\Basic\Strings::toPascal($table);
 		}
 		return $this->tables;
 	}

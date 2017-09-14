@@ -2,29 +2,19 @@
 
 use Nette\Utils;
 
-include __DIR__ . "/../vendor/autoload.php";
+$loader = include __DIR__ . '/../vendor/autoload.php';
+
+/* @var $loader \Composer\Autoload\ClassLoader */
+$loader->addPsr4('Salamium\Test\\', __DIR__ . '/Model/');
+
 include __DIR__ . '/RunTest.php';
 
-$configurator = new Nette\Configurator();
+define('TEMP_DIR', __DIR__ . '/temp/' . getmypid());
 
-$tmp = __DIR__ . '/temp/' . getmypid();
-$logDir = $tmp . '/log';
+$logDir = TEMP_DIR . '/log';
 Utils\FileSystem::createDir($logDir);
 
-$configurator->enableDebugger($logDir);
-$configurator->setTempDirectory($tmp);
-$configurator->setDebugMode(TRUE);
-Tracy\Debugger::enable(FALSE);
-
-$configurator->createRobotLoader()
-	->addDirectory(__DIR__ . '/Model')
-	->register();
-
-$configurator->addConfig(__DIR__ . '/config/config.neon');
-$configurator->addConfig(__DIR__ . '/config/config.local.neon');
-
-$container = $configurator->createContainer();
-
 Tester\Environment::setup();
+Tracy\Debugger::enable(FALSE, $logDir);
 
-return Salamium\Database\RunTest::setContainer($container);
+return $logDir;
