@@ -124,21 +124,24 @@ class RepositoryTest extends \Tester\TestCase
 			'name' => 'bar',
 		]);
 
+		$condition1 = [
+			'users_id' => $user->id,
+			'countries_id' => $country1->id
+		];
 		$this->usersXCountries->insert([
-			[
-				'users_id' => $user->id,
-				'countries_id' => $country1->id
-			],
+			$condition1,
 			[
 				'users_id' => $user->id,
 				'countries_id' => $country2->id
 			]
 		]);
 
+		$count = 0;
 		foreach ($user->countries as $item) {
 			Assert::type(Salamium\Test\Entity\Country::class, $item);
+			++$count;
 		};
-
+		Assert::same(2, $count);
 	}
 
 }

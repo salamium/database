@@ -20,7 +20,7 @@ class User extends \Salamium\Database\Table\Entity
 
 	public function getCountries()
 	{
-		foreach ($this->related('users_x_countries.users_id') as $item) {
+		foreach ($this->related('users_x_countries', 'users_id') as $item) {
 			yield $item->ref('countries', 'countries_id');
 		}
 	}

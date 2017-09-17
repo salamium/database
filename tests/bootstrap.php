@@ -11,8 +11,8 @@ include __DIR__ . '/RunTest.php';
 
 define('TEMP_DIR', __DIR__ . '/temp/' . getmypid());
 
-$logDir = TEMP_DIR . '/log';
-Utils\FileSystem::createDir($logDir);
+$logDir = TEMP_DIR . '/..';
+Utils\FileSystem::createDir(TEMP_DIR);
 
 Tester\Environment::setup();
 Tracy\Debugger::enable(FALSE, $logDir);
