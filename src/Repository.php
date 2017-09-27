@@ -17,12 +17,14 @@ abstract class Repository
 	/** @var Context */
 	protected $context;
 
+
 	public function __construct($table, Context $context)
 	{
 		$this->table = $table;
 		$this->context = $context;
 		$this->construct();
 	}
+
 
 	/**
 	 * @param mixed $id
@@ -33,6 +35,7 @@ abstract class Repository
 		return $this->deleteBy([$this->getPrimary() => $id]);
 	}
 
+
 	/**
 	 * @param array $condition
 	 * @return int
@@ -41,6 +44,7 @@ abstract class Repository
 	{
 		return $this->findBy($condition)->delete();
 	}
+
 
 	/**
 	 * @param array $condition
@@ -51,6 +55,7 @@ abstract class Repository
 		return $this->findBy($condition)->limit(1)->fetch();
 	}
 
+
 	/**
 	 * @param array $condition
 	 * @return bool
@@ -60,16 +65,18 @@ abstract class Repository
 		return (bool) $this->findBy($condition)->select('1 AS exists')->limit(1)->fetch();
 	}
 
+
 	/**
 	 * @param mixed $id
 	 * @param string $column
 	 * @param mixed $params
 	 * @return Table\Entity
 	 */
-	public function fetch($id, $column = NULL, ...$params)
+	public function fetch($id, $column = null, ...$params)
 	{
 		return $this->fetchBy([$this->getPrimary() => $id], $column, ...$params);
 	}
+
 
 	/**
 	 * @param array $condition
@@ -77,7 +84,7 @@ abstract class Repository
 	 * @param mixed $params
 	 * @return Table\Entity
 	 */
-	public function fetchBy(array $condition, $column = NULL, ...$params)
+	public function fetchBy(array $condition, $column = null, ...$params)
 	{
 		$sql = $this->findBy($condition);
 		if ($column) {
@@ -85,6 +92,7 @@ abstract class Repository
 		}
 		return $sql->fetch();
 	}
+
 
 	/**
 	 * @param mixed $id
@@ -94,6 +102,7 @@ abstract class Repository
 	{
 		return $this->createSelection()->where($this->getPrimary(), $id);
 	}
+
 
 	/**
 	 * @param array $condition
@@ -108,6 +117,7 @@ abstract class Repository
 		return $sql;
 	}
 
+
 	/**
 	 * @param array $data
 	 * @return Table\Entity
@@ -116,6 +126,7 @@ abstract class Repository
 	{
 		return $this->createSelection()->insert($data);
 	}
+
 
 	/**
 	 * Only for unique row.
@@ -132,19 +143,21 @@ abstract class Repository
 		return $this->insert($data + $condition);
 	}
 
+
 	/**
 	 * @param string|NULL $columns
 	 * @param mixed $args
 	 * @return Table\Selection
 	 */
-	public function select($columns = NULL, ...$args)
+	public function select($columns = null, ...$args)
 	{
 		$sql = $this->createSelection();
-		if ($columns !== NULL) {
+		if ($columns !== null) {
 			$sql->select($columns, ...$args);
 		}
 		return $sql;
 	}
+
 
 	/**
 	 * @param mixed $id
@@ -156,6 +169,7 @@ abstract class Repository
 		return $this->updateBy([$this->getPrimary() => $id], $data);
 	}
 
+
 	/**
 	 * @param array $condition
 	 * @param array $data
@@ -166,11 +180,13 @@ abstract class Repository
 		return $this->findBy($condition)->update($data);
 	}
 
+
 	/** @return Transaction */
 	public function getTransaction()
 	{
 		return $this->context->getTransaction();
 	}
+
 
 	/** @return Table\Selection */
 	protected function createSelection()
@@ -178,12 +194,14 @@ abstract class Repository
 		return $this->context->table($this->table);
 	}
 
+
 	/**
 	 * Use in trait if you need anything set.
 	 */
 	protected function construct()
 	{
 	}
+
 
 	/** @return string */
 	final protected function getPrimary()

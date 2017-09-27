@@ -2,14 +2,32 @@
 
 namespace Salamium\Database;
 
-abstract class DatabaseException extends \Exception {}
+abstract class DatabaseException extends \Exception
+{
 
-class NoTransactionException extends DatabaseException {}
+}
 
-class InvalidArgumentException extends \InvalidArgumentException {}
+class NoTransactionException extends DatabaseException
+{
 
-abstract class TreeException extends DatabaseException {}
+}
 
-class TreeParentDoesNotExistsException extends TreeException {}
+class InvalidArgumentException extends \InvalidArgumentException
+{
 
-class TreeLogicException extends TreeException {}
+}
+
+abstract class TreeException extends DatabaseException
+{
+
+}
+
+class TreeParentDoesNotExistsException extends TreeException
+{
+
+}
+
+class TreeLogicException extends TreeException
+{
+
+}

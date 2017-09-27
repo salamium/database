@@ -20,6 +20,7 @@ class RepositoryTest extends \Tester\TestCase
 	/** @var Repository\UsersXCountries */
 	private $usersXCountries;
 
+
 	protected function setUp()
 	{
 		$this->users = Environment::getByType(Repository\Users::class);
@@ -28,10 +29,12 @@ class RepositoryTest extends \Tester\TestCase
 		$this->users->getTransaction()->begin();
 	}
 
+
 	protected function tearDown()
 	{
 		$this->users->getTransaction()->rollBack();
 	}
+
 
 	public function testEntity()
 	{
@@ -52,23 +55,23 @@ class RepositoryTest extends \Tester\TestCase
 		Assert::same('CZ', $user->country->name); // $user->countries is possible (default by nette)
 	}
 
+
 	public function testFetch()
 	{
 		$entity = $this->users->insert([
 			'name' => 'Milan',
 			'surname' => 'h4kuna'
 		]);
-
 		/* @var $entity Salamium\Test\Entity\User */
 		Assert::same('Milan h4kuna', $entity->fullName);
 		Assert::same('Milan', $entity->name);
 		Assert::same('h4kuna', $entity->surname);
 		Assert::true(is_int($entity->id));
-
 		/* @var $entity2 Salamium\Test\Entity\User */
 		$entity2 = $this->users->fetch($entity->id, 'name, ? AS surname', 'foo');
 		Assert::same('Milan foo', $entity2->fullName);
 	}
+
 
 	public function testSave()
 	{
@@ -79,6 +82,7 @@ class RepositoryTest extends \Tester\TestCase
 		Assert::same('Bar', $entity2->name);
 	}
 
+
 	public function testDelete()
 	{
 		$entity = $this->users->save(['surname' => 'h4kuna'], ['name' => 'Foo']);
@@ -86,16 +90,17 @@ class RepositoryTest extends \Tester\TestCase
 		Assert::false($this->users->find($entity->id)->fetch());
 	}
 
+
 	public function testExists()
 	{
 		$entity = $this->users->insert([
 			'name' => 'Milan',
 			'surname' => 'h4kuna'
 		]);
-
 		Assert::false($this->users->exists(['id' => -1]));
 		Assert::same($this->users->exists(['id' => $entity->id])->id, $entity->id);
 	}
+
 
 	public function testExistsStrict()
 	{
@@ -103,10 +108,10 @@ class RepositoryTest extends \Tester\TestCase
 			'name' => 'Milan',
 			'surname' => 'h4kuna'
 		]);
-
 		Assert::false($this->users->existsStrict(['id' => -1]));
 		Assert::true($this->users->existsStrict(['id' => $entity->id]));
 	}
+
 
 	public function testRelatedCountries()
 	{
@@ -115,21 +120,17 @@ class RepositoryTest extends \Tester\TestCase
 			'name' => 'Milan',
 			'surname' => 'h4kuna'
 		]);
-
 		$country1 = $this->countries->insert([
 			'name' => 'foo',
 		]);
-
 		$country2 = $this->countries->insert([
 			'name' => 'bar',
 		]);
-
-		$condition1 = [
-			'users_id' => $user->id,
-			'countries_id' => $country1->id
-		];
 		$this->usersXCountries->insert([
-			$condition1,
+			[
+				'users_id' => $user->id,
+				'countries_id' => $country1->id
+			],
 			[
 				'users_id' => $user->id,
 				'countries_id' => $country2->id

@@ -13,10 +13,12 @@ class TempItemTest extends \Tester\TestCase
 	/** @var Repository\Users */
 	private $users;
 
+
 	public function __construct()
 	{
 		$this->users = Environment::getByType(Repository\Users::class);
 	}
+
 
 	public function testBasic()
 	{
@@ -24,16 +26,13 @@ class TempItemTest extends \Tester\TestCase
 			'name' => 'Doe',
 			'surname' => 'Jou'
 		]);
-		Assert::null($this->users->fetchItem(NULL));
-
+		Assert::null($this->users->fetchItem(null));
 		$user1 = $this->users->fetchItem($user->id);
 		$user2 = $this->users->fetchItem($user->id);
 		Assert::same($user1, $user2);
-
 		$this->users->update($user->id, ['name' => 'Joe']);
 		$user1 = $this->users->fetchItem($user->id);
 		Assert::notSame($user1, $user2);
-
 		$this->users->saveItem($user2);
 		$user1 = $this->users->fetchItem($user->id);
 		Assert::same($user1, $user2);

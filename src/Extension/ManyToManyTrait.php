@@ -21,19 +21,17 @@ trait ManyToManyTrait
 		$newValues = (array) current($columnR);
 		$exists = $this->select()->where(key($columnL), current($columnL))->fetchPairs($cR, $cR);
 		$delete = array_diff($exists, $newValues);
-
 		$insert = [];
 		foreach ($newValues as $valueR) {
 			if (!array_key_exists($valueR, $exists)) {
 				$insert[] = $columnL + [$cR => $valueR];
 			}
 		}
-
 		if ($delete && $insert) {
-			$this->getTransaction()->begin();
-			$this->deleteBy($columnL + [$cR => $delete]);
-			$this->insert($insert);
-			$this->getTransaction()->commit();
+			$this->getTransaction()->transaction(function () use ($columnL, $cR, $delete, $insert) {
+				$this->deleteBy($columnL + [$cR => $delete]);
+				$this->insert($insert);
+			});
 		} elseif ($insert) {
 			$this->insert($insert);
 		} elseif ($delete) {

@@ -17,6 +17,7 @@ trait TempItemTrait
 	/** @var string */
 	private $cacheColumn;
 
+
 	/**
 	 * @param int $itemId
 	 * @return Table\Entity|NULL
@@ -24,14 +25,14 @@ trait TempItemTrait
 	public function fetchItem($itemId)
 	{
 		if (!$itemId) {
-			return NULL;
+			return null;
 		}
-
 		if (!isset($this->items[$itemId])) {
 			$this->items[$itemId] = $this->fetchBy([$this->cacheColumn => $itemId]);
 		}
 		return $this->items[$itemId];
 	}
+
 
 	public function update($id, $data)
 	{
@@ -39,15 +40,18 @@ trait TempItemTrait
 		return parent::updateBy([$this->cacheColumn => $id], $data);
 	}
 
+
 	public function saveItem(Table\Entity $entity)
 	{
 		$this->items[(string) $entity->{$this->cacheColumn}] = $entity;
 	}
 
+
 	protected function setCacheColumn($cacheColumn)
 	{
 		$this->cacheColumn = $cacheColumn;
 	}
+
 
 	protected function construct()
 	{

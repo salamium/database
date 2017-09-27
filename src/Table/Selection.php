@@ -9,5 +9,6 @@ use Nette\Database\Table as NDT;
  */
 class Selection extends NDT\Selection
 {
+
 	use SelectionTrait;
 }

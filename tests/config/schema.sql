@@ -16,8 +16,8 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB COLLATE utf8_general_ci;
 
 CREATE TABLE `users_x_countries` (
-  `users_id` tinyint(3) unsigned NOT NULL,
-  `countries_id` tinyint(3) unsigned NOT NULL
+  `users_id` int unsigned NOT NULL,
+  `countries_id` int unsigned NOT NULL
 ) ENGINE=InnoDB DEFAULT COLLATE=utf8_czech_ci;
 
 ALTER TABLE `users_x_countries` ADD UNIQUE `users_id_countries_id` (`users_id`, `countries_id`);

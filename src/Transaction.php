@@ -13,10 +13,12 @@ class Transaction
 	/** @var int 0 - mean not in transaction */
 	private $id = 0;
 
+
 	public function __construct(ND\Connection $connection)
 	{
 		$this->connection = $connection;
 	}
+
 
 	/** @return int Id */
 	public function begin()
@@ -31,6 +33,7 @@ class Transaction
 		return $this->id;
 	}
 
+
 	/** @return int Id */
 	public function commit()
 	{
@@ -42,6 +45,7 @@ class Transaction
 		return --$this->id;
 	}
 
+
 	/** @return int Id of point */
 	public function rollBack()
 	{
@@ -52,6 +56,7 @@ class Transaction
 		}
 		return --$this->id;
 	}
+
 
 	/**
 	 * @param \Closure $callback
@@ -70,6 +75,7 @@ class Transaction
 		}
 	}
 
+
 	/** @return int Id */
 	public function inTransaction()
 	{
@@ -80,15 +86,16 @@ class Transaction
 		return $this->id;
 	}
 
+
 	/** @return int */
 	private function checkTransaction()
 	{
 		if (!$this->inTransaction()) {
 			throw new NoTransactionException('Let\'s start transaction via begin().');
 		}
-
 		return $this->id;
 	}
+
 
 	private function getSavepoint()
 	{

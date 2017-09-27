@@ -9,7 +9,6 @@ use Salamium\Test\Repository,
 	Tester\Assert;
 
 require __DIR__ . '/../../bootstrap.php';
-
 $compiler = new DI\Compiler();
 $compiler->addConfig([
 	'parameters' => [
@@ -37,7 +36,6 @@ $compiler->addConfig([
 		],
 	]
 ]);
-
 $extension = new DatabaseExtension();
 $extension->setConfig([
 	'entityMap' => [
@@ -47,20 +45,19 @@ $extension->setConfig([
 	]
 ]);
 $database = new \Nette\Bridges\DatabaseDI\DatabaseExtension();
-
 $database->setConfig([
 	'default' => [
-		'debugger' => FALSE,
+		'debugger' => false,
 		'dsn' => 'sqlite::memory:'
 	],
 	'foo' => [
-		'debugger' => FALSE,
+		'debugger' => false,
 		'dsn' => 'sqlite::memory:',
 	],
 	'bar' => [
-		'debugger' => FALSE,
+		'debugger' => false,
 		'dsn' => 'sqlite::memory:',
-		'conventions' => NULL
+		'conventions' => null
 	]
 ]);
 $compiler->addExtension('salamium.database', $extension);
@@ -68,21 +65,15 @@ $compiler->addExtension('database', $database);
 //file_put_contents(__DIR__ . '/container.php', "<?php\n" . $compiler->compile());
 eval($compiler->compile());
 $container = new \Container();
-
 /* @var $context Database\Context */
 $context = $container->getService('database.default.context');
 Assert::type(Database\Context::class, $context);
-
 Assert::type(Database\Conventions\IConventions::class, $context->getConventions());
-
 /* @var $context Database\Context */
 $context = $container->getService('database.foo.context');
 Assert::type(Database\Context::class, $context);
-
 Assert::type(Database\Conventions\IConventions::class, $context->getConventions());
-
 /* @var $context Database\Context */
 $context = $container->getService('database.bar.context');
 Assert::type(Database\Context::class, $context);
-
 Assert::type(Database\Conventions\IConventions::class, $context->getConventions());

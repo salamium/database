@@ -15,14 +15,16 @@ trait ListCacheTrait
 	/** @var string */
 	private $idCache;
 
+
 	public function getItems()
 	{
 		$data = $this->getCache()->load('items');
-		if ($data !== NULL) {
+		if ($data !== null) {
 			return $data;
 		}
 		return $this->getCache()->save('items', $this->loadDialItems(), $this->addGlobalTag([]));
 	}
+
 
 	public function deleteBy(array $condition)
 	{
@@ -31,12 +33,14 @@ trait ListCacheTrait
 		return $result;
 	}
 
+
 	public function insert($data)
 	{
 		$result = parent::insert($data);
 		$this->clearCache($data, []);
 		return $result;
 	}
+
 
 	public function updateBy(array $condition, $data)
 	{
@@ -45,34 +49,38 @@ trait ListCacheTrait
 		return $result;
 	}
 
+
 	protected function addGlobalTag(array $conditions)
 	{
 		if (!isset($conditions[NC\Cache::TAGS])) {
 			$conditions[NC\Cache::TAGS] = [];
 		}
-
 		$conditions[NC\Cache::TAGS][] = $this->getGlobalTag();
 		$this->prepareConditions($conditions);
 		return $conditions;
 	}
+
 
 	protected function clearCache($data, $condition)
 	{
 		$this->getCache()->clean($this->addGlobalTag([]));
 	}
 
+
 	private function getGlobalTag()
 	{
-		if ($this->idCache === NULL) {
+		if ($this->idCache === null) {
 			$classPath = explode('\\', static::class);
 			$this->idCache = end($classPath);
 		}
 		return $this->idCache;
 	}
 
+
 	protected function prepareConditions(& $conditions)
 	{
 	}
+
 
 	/**
 	 * List of items for cache.
