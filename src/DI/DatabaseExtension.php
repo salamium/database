@@ -21,7 +21,7 @@ class DatabaseExtension extends NDI\CompilerExtension
 
 		// cacheAccessor
 		$builder->addDefinition($this->prefix('cacheAccessor'))
-			->setClass(Database\Extension\Caching\CacheAccessor::class);
+			->setFactory(Database\Extension\Caching\CacheAccessor::class);
 
 		$this->checkEntityMap();
 
@@ -34,10 +34,10 @@ class DatabaseExtension extends NDI\CompilerExtension
 		$cache = $builder->getDefinition($this->prefix('cacheAccessor'));
 
 		foreach ($builder->getDefinitions() as $name => $definition) {
-			if ($definition->getClass() === ND\Context::class) {
+			if ($definition->getFactory()->getEntity() === ND\Context::class) {
 				$this->updateContext($builder, $name, $definition);
 			}
-			if ($definition->getClass() && $this->isNeedCacheAccessor($definition)) {
+			if ($definition->getFactory()->getEntity() && $this->isNeedCacheAccessor($definition)) {
 				$definition->addSetup('?->setCacheAccessor(?)', [$definition, $cache]);
 			}
 		}
@@ -76,7 +76,7 @@ class DatabaseExtension extends NDI\CompilerExtension
 		$arguments = $definition->getFactory()->arguments;
 		if (!isset($arguments[2])) {
 			$netteConvention = $builder->addDefinition($this->prefix('nette.convention.' . $databaseName))
-				->setClass(ND\Conventions\StaticConventions::class);
+				->setFactory(ND\Conventions\StaticConventions::class);
 			$convention = $this->createConvention($builder, $netteConvention, $databaseName);
 		} elseif (self::isIConventions($arguments[2]->getClass(), Database\Conventions\IConventions::class)) {
 			$convention = $arguments[2];
