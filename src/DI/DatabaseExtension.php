@@ -64,7 +64,7 @@ class DatabaseExtension extends NDI\CompilerExtension
 	}
 
 
-	private function updateContext(NDI\ContainerBuilder $builder, $name, $definition)
+	private function updateContext(NDI\ContainerBuilder $builder, $name, NDI\ServiceDefinition $definition)
 	{
 		$databaseName = self::getDatabaseName($name);
 		if (!isset($this->config['entityMap'][$databaseName])) {
@@ -75,35 +75,56 @@ class DatabaseExtension extends NDI\CompilerExtension
 			$netteConvention = $builder->addDefinition($this->prefix('nette.convention.' . $databaseName))
 				->setFactory(ND\Conventions\StaticConventions::class);
 			$convention = $this->createConvention($builder, $netteConvention, $databaseName);
-		} elseif (self::isIConventions($arguments[2]->getClass(), Database\Conventions\IConventions::class)) {
+		} elseif (self::isIConventions($arguments[2]->getType(), Database\Conventions\IConventions::class)) {
 			$convention = $arguments[2];
-		} elseif (self::isIConventions($arguments[2]->getClass(), ND\IConventions::class)) {
+		} elseif (self::isIConventions($arguments[2]->getType(), ND\IConventions::class)) {
 			$convention = $this->createConvention($builder, $arguments[2], $databaseName);
 		} else {
-			throw new Database\InvalidArgumentException('Unknown Conventions: ' . $arguments[2]->getClass());
+			throw new Database\InvalidArgumentException('Unknown Conventions: ' . $arguments[2]->getType());
 		}
 		$arguments[2] = $convention;
-		$definition->setClass(Database\Context::class, $arguments);
+		$definition->setFactory(Database\Context::class, $arguments)
+			->setType(Database\Context::class);
 	}
 
 
-	private function isNeedCacheAccessor($definition)
+	private function isNeedCacheAccessor(NDI\ServiceDefinition $definition)
 	{
-		$class = new \ReflectionClass($definition->getClass());
-		return $this->checkClass4Accessor($class);
+		return self::isA($definition->getType(), Database\Extension\ListCacheTrait::class) || self::isA($definition->getType(), Database\Extension\CacheTrait::class);
 	}
 
 
-	private function checkClass4Accessor(\ReflectionClass $class)
+	private static function isA($className, $traitName)
 	{
-		static $cache = [Database\Extension\ListCacheTrait::class, Database\Extension\CacheTrait::class];
-		foreach ($class->getTraits() as $trait) {
-			if (in_array($trait->name, $cache)) {
+		try {
+			$traitReflection = new \ReflectionClass($traitName);
+		} catch (\ReflectionException $e) {
+			throw new Database\InvalidArgumentException('Trait does not exists: ' . $traitName);
+		}
+
+		if (!$traitReflection->isTrait()) {
+			return false;
+		}
+
+		return self::hasTrait(new \ReflectionClass($className), $traitName);
+	}
+
+
+	private static function hasTrait(\ReflectionClass $class, $traitName)
+	{
+		$traits = $class->getTraits();
+		if (isset($traits[$traitName])) {
+			return true;
+		}
+
+		foreach ($traits as $traitReflection) {
+			if (self::hasTrait($traitReflection, $traitName)) {
 				return true;
 			}
 		}
+
 		if ($class->getParentClass()) {
-			return $this->checkClass4Accessor($class->getParentClass());
+			return self::hasTrait($class->getParentClass(), $traitName);
 		}
 		return false;
 	}
