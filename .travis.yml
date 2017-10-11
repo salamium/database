@@ -6,9 +6,6 @@ php:
     - 7.2
 
 before_install:
-    # turn off XDebug
-    - phpenv config-rm xdebug.ini || return 0
-
     # Create databases.neon
     - cp ./tests/config/config.travis.neon ./tests/config/config.local.neon
 
@@ -19,7 +16,7 @@ before_install:
     - cat tests/config/schema.sql | mysql -u root
 
     # enable coverage
-    - if [ "$TRAVIS_PHP_VERSION" == "7.1" ]; then NTESTER_FLAGS="phpdbg --coverage ./coverage.xml --coverage-src ./src"; else NTESTER_FLAGS=""; fi
+    - if [ "$TRAVIS_PHP_VERSION" == "7.1" ]; then NTESTER_FLAGS="-p phpdbg --coverage ./coverage.xml --coverage-src ./src"; else NTESTER_FLAGS=""; fi
 
 install:
     - travis_retry composer install --no-progress --prefer-dist
@@ -37,9 +34,3 @@ after_failure:
       && php coveralls.phar --verbose --config tests/.coveralls.yml
       || true;
       fi
-
-sudo: false
-
-cache:
-    directories:
-        - $HOME/.composer/cache
