@@ -59,14 +59,14 @@ class Transaction
 
 
 	/**
-	 * @param \Closure $callback
+	 * @param callable $callback
 	 * @return mixed
 	 */
-	public function transaction(\Closure $callback)
+	public function transaction(callable $callback)
 	{
 		try {
 			$this->begin();
-			$return = $callback();
+			$return = call_user_func($callback);
 			$this->commit();
 			return $return;
 		} catch (\Exception $e) {
