@@ -30,7 +30,7 @@ abstract class Repository
 	 */
 	public function delete($id)
 	{
-		return $this->deleteBy([$this->getPrimary() => $id]);
+		return $this->find($id)->delete();
 	}
 
 	/**
@@ -68,7 +68,11 @@ abstract class Repository
 	 */
 	public function fetch($id, $column = null, ...$params)
 	{
-		return $this->fetchBy([$this->getPrimary() => $id], $column, ...$params);
+		$sql = $this->find($id);
+		if ($column) {
+			$sql->select($column, ...$params);
+		}
+		return $sql->fetch();
 	}
 
 	/**
@@ -92,7 +96,7 @@ abstract class Repository
 	 */
 	public function find($id)
 	{
-		return $this->createSelection()->where($this->getPrimary(), $id);
+		return $this->createSelection()->wherePrimary($id);
 	}
 
 	/**
@@ -153,7 +157,7 @@ abstract class Repository
 	 */
 	public function update($id, $data)
 	{
-		return $this->updateBy([$this->getPrimary() => $id], $data);
+		return $this->find($id)->update($data);
 	}
 
 	/**
