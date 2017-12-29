@@ -14,12 +14,10 @@ trait CacheTrait
 	/** @var Caching\CacheAccessor */
 	private $cacheAccessor;
 
-
 	public function setCacheAccessor(Caching\CacheAccessor $cacheAccessor)
 	{
 		$this->cacheAccessor = $cacheAccessor;
 	}
-
 
 	/** @return NC\Cache */
 	protected function getCache()

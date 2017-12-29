@@ -13,18 +13,16 @@ class TempItemTest extends \Tester\TestCase
 	/** @var Repository\Users */
 	private $users;
 
-
 	public function __construct()
 	{
 		$this->users = Environment::getByType(Repository\Users::class);
 	}
 
-
 	public function testBasic()
 	{
 		$user = $this->users->insert([
 			'name' => 'Doe',
-			'surname' => 'Jou'
+			'surname' => 'Jou',
 		]);
 		Assert::null($this->users->fetchItem(null));
 		$user1 = $this->users->fetchItem($user->id);

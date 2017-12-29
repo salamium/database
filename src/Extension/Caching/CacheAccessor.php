@@ -13,12 +13,10 @@ class CacheAccessor
 	/** @var Caching\Cache */
 	private $cache;
 
-
 	public function __construct(Caching\IStorage $storage)
 	{
 		$this->storage = $storage;
 	}
-
 
 	/**
 	 * @param string $table

@@ -12,12 +12,10 @@ class TransactionTest extends \Tester\TestCase
 	/** @var Context */
 	private $context;
 
-
 	public function __construct(Context $context)
 	{
 		$this->context = $context;
 	}
-
 
 	public function testBasic()
 	{
@@ -30,7 +28,6 @@ class TransactionTest extends \Tester\TestCase
 		Assert::equal(0, $transaction->rollBack());
 		$this->checkNotInTransaction();
 	}
-
 
 	public function testSavepoint()
 	{
@@ -47,7 +44,6 @@ class TransactionTest extends \Tester\TestCase
 		$this->checkNotInTransaction();
 	}
 
-
 	public function testFail()
 	{
 		$transaction = $this->context->getTransaction();
@@ -58,7 +54,6 @@ class TransactionTest extends \Tester\TestCase
 			$transaction->rollBack();
 		}, NoTransactionException::class);
 	}
-
 
 	private function checkNotInTransaction()
 	{

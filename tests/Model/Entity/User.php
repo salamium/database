@@ -18,14 +18,12 @@ class User extends \Salamium\Database\Table\Entity
 		return $this->ref('countries');
 	}
 
-
 	public function getCountries()
 	{
 		foreach ($this->related('users_x_countries', 'users_id') as $item) {
 			yield $item->ref('countries', 'countries_id');
 		}
 	}
-
 
 	public function getFullName()
 	{

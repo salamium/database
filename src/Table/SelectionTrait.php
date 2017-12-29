@@ -10,12 +10,10 @@ trait SelectionTrait
 		return new Selection($this->context, $this->conventions, $table ?: $this->name, $this->cache ? $this->cache->getStorage() : null);
 	}
 
-
 	protected function createGroupedSelectionInstance($table, $column)
 	{
 		return new GroupedSelection($this->context, $this->conventions, $table, $column, $this, $this->cache ? $this->cache->getStorage() : null);
 	}
-
 
 	protected function createRow(array $row)
 	{

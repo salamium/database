@@ -13,19 +13,16 @@ class RepositoryCacheTest extends \Tester\TestCase
 	/** @var Repository\Countries */
 	private $countries;
 
-
 	protected function setUp()
 	{
 		$this->countries = Environment::getByType(Repository\Countries::class);
 		$this->countries->getTransaction()->begin();
 	}
 
-
 	protected function tearDown()
 	{
 		$this->countries->getTransaction()->rollBack();
 	}
-
 
 	public function testBasic()
 	{

@@ -21,7 +21,6 @@ class RunTest
 		}
 	}
 
-
 	/**
 	 * @param $pattern
 	 * @param $method
@@ -32,7 +31,6 @@ class RunTest
 		$reflection = new \ReflectionClass(Table\Selection::class);
 		Assert::same(1, preg_match('~' . preg_quote($pattern) . '~', file_get_contents($reflection->getFileName())), Table\Selection::class . '::' . $method . ' was changed.');
 	}
-
 
 	private static function getConnection()
 	{
@@ -56,24 +54,20 @@ class Environment
 	/** @var DI\Container */
 	private static $container;
 
-
 	public static function setContainer($container)
 	{
 		return self::$container = $container;
 	}
-
 
 	public static function getContainer()
 	{
 		return self::$container;
 	}
 
-
 	public static function getByType($class)
 	{
 		return self::$container->getByType($class);
 	}
-
 
 	public static function getService($name)
 	{

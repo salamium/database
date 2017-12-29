@@ -16,7 +16,6 @@ class MemoryStorage implements Caching\IStorage
 	/** @var array */
 	private $tags = [];
 
-
 	/**
 	 * Read from cache.
 	 * @param  string key
@@ -27,7 +26,6 @@ class MemoryStorage implements Caching\IStorage
 		return isset($this->data[$key]) ? $this->data[$key] : null;
 	}
 
-
 	/**
 	 * Prevents item reading and writing. Lock is released by write() or remove().
 	 * @param  string key
@@ -36,7 +34,6 @@ class MemoryStorage implements Caching\IStorage
 	public function lock($key)
 	{
 	}
-
 
 	/**
 	 * Writes item into the cache.
@@ -55,7 +52,6 @@ class MemoryStorage implements Caching\IStorage
 		}
 	}
 
-
 	/**
 	 * Removes item from the cache.
 	 * @param  string key
@@ -65,7 +61,6 @@ class MemoryStorage implements Caching\IStorage
 	{
 		unset($this->data[$key]);
 	}
-
 
 	/**
 	 * Removes items from the cache by conditions & garbage collector.

@@ -17,7 +17,7 @@ final class TreeColumnMapper extends \h4kuna\DataType\Immutable\Messenger implem
 			'parentId' => $parentId,
 			'deep' => $deep,
 			'left' => $left,
-			'right' => $right
+			'right' => $right,
 		]);
 	}
 

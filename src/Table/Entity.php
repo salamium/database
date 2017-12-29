@@ -8,7 +8,6 @@ abstract class Entity extends \Nette\Database\Table\ActiveRow
 	/** @var array */
 	private $map = [];
 
-
 	public function &__get($key)
 	{
 		$method = $this->getMethod($key);
@@ -18,7 +17,6 @@ abstract class Entity extends \Nette\Database\Table\ActiveRow
 		}
 		return parent::__get($key);
 	}
-
 
 	private function getMethod($key)
 	{
@@ -30,7 +28,6 @@ abstract class Entity extends \Nette\Database\Table\ActiveRow
 		}
 		return $this->map[$key];
 	}
-
 
 	public static function propertyToMethod($field)
 	{

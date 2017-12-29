@@ -12,7 +12,7 @@ require __DIR__ . '/../../bootstrap.php';
 $compiler = new DI\Compiler();
 $compiler->addConfig([
 	'parameters' => [
-		'tempDir' => TEMP_DIR
+		'tempDir' => TEMP_DIR,
 	],
 	'services' => [
 		'database.foo.conventions' => [
@@ -20,35 +20,35 @@ $compiler->addConfig([
 			'arguments' => [
 				'@myConvention',
 				[
-					\Salamium\Test\Entity\User::class
-				]
-			]
+					\Salamium\Test\Entity\User::class,
+				],
+			],
 		],
 		'myConvention' => ND\Conventions\StaticConventions::class,
 		'storage' => \Nette\Caching\Storages\DevNullStorage::class,
 		'user.repository' => [
 			'factory' => Repository\Users::class,
-			'arguments' => ['users']
+			'arguments' => ['users'],
 		],
 		'country.repository' => [
 			'factory' => Repository\Countries::class,
-			'arguments' => ['countries']
+			'arguments' => ['countries'],
 		],
-	]
+	],
 ]);
 $extension = new DatabaseExtension();
 $extension->setConfig([
 	'entityMap' => [
 		'default' => [
-			\Salamium\Test\Entity\User::class
+			\Salamium\Test\Entity\User::class,
 		],
-	]
+	],
 ]);
 $database = new \Nette\Bridges\DatabaseDI\DatabaseExtension();
 $database->setConfig([
 	'default' => [
 		'debugger' => false,
-		'dsn' => 'sqlite::memory:'
+		'dsn' => 'sqlite::memory:',
 	],
 	'foo' => [
 		'debugger' => false,
@@ -57,8 +57,8 @@ $database->setConfig([
 	'bar' => [
 		'debugger' => false,
 		'dsn' => 'sqlite::memory:',
-		'conventions' => null
-	]
+		'conventions' => null,
+	],
 ]);
 $compiler->addExtension('salamium.database', $extension);
 $compiler->addExtension('database', $database);

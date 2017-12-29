@@ -3,18 +3,18 @@ $config = [
 	'mysql' => [
 		'dns' => 'mysql:host=localhost;dbname=test',
 		'user' => null,
-		'password' => null
+		'password' => null,
 	],
 	'pgsql' => [
 		'dns' => 'pgsql:host=localhost;dbname=test',
 		'user' => null,
-		'password' => null
+		'password' => null,
 	],
 	'sqlite' => [
 		'dns' => 'sqlite::memory:',
 		'user' => null,
-		'password' => null
-	]
+		'password' => null,
+	],
 ];
 $localConfig = __DIR__ . '/config.local.php';
 $local = [];

@@ -24,12 +24,10 @@ trait TreeTrait
 	/** @var string */
 	private $comlumns;
 
-
 	public function setColumnMapper(Tree\TreeColumnMapper $columnMapper)
 	{
 		$this->columnMapper = $columnMapper;
 	}
-
 
 	/**
 	 * Add node as son to end position
@@ -42,7 +40,6 @@ trait TreeTrait
 		return $this->addNodeTransaction($id, $data, self::$SON);
 	}
 
-
 	/**
 	 * Add node as son to first position
 	 * @param int $id
@@ -53,7 +50,6 @@ trait TreeTrait
 	{
 		return $this->addNodeTransaction($id, $data, self::$SON_FIRST);
 	}
-
 
 	/**
 	 * Add node after this node
@@ -66,7 +62,6 @@ trait TreeTrait
 		return $this->addNodeTransaction($id, $data, self::$AFTER);
 	}
 
-
 	/**
 	 * Add node before this
 	 * @param int $id
@@ -77,7 +72,6 @@ trait TreeTrait
 	{
 		return $this->addNodeTransaction($id, $data, self::$BEFORE);
 	}
-
 
 	/**
 	 * Append to end of tree
@@ -98,7 +92,6 @@ trait TreeTrait
 		});
 	}
 
-
 	/**
 	 * @param int $fromId
 	 * @param int $toId
@@ -108,7 +101,6 @@ trait TreeTrait
 	{
 		return $this->moveNodesTransaction($fromId, $toId, self::$AFTER);
 	}
-
 
 	/**
 	 * @param int $fromId
@@ -120,7 +112,6 @@ trait TreeTrait
 		return $this->moveNodesTransaction($fromId, $toId, self::$BEFORE);
 	}
 
-
 	/**
 	 * @param int $fromId
 	 * @param int $toId
@@ -131,7 +122,6 @@ trait TreeTrait
 		return $this->moveNodesTransaction($fromId, $toId, self::$SON);
 	}
 
-
 	/**
 	 * @param int $fromId
 	 * @param int $toId
@@ -141,7 +131,6 @@ trait TreeTrait
 	{
 		return $this->moveNodesTransaction($fromId, $toId, self::$SON_FIRST);
 	}
-
 
 	/**
 	 * Remove all nodes under this id
@@ -183,7 +172,6 @@ trait TreeTrait
 		});
 	}
 
-
 	/**
 	 * Delete node with current id
 	 * @param int $id Node ID
@@ -212,7 +200,7 @@ trait TreeTrait
 				]);
 			$this->select()->where($r . ' > ?', $parent[$r])->update([
 				$r => self::l($this->delimite($r) . ' - 2'),
-				$l => self::l("CASE WHEN " . $this->delimite($l) . " > {$parent[$r]} THEN " . $this->delimite($l) . " - 2 ELSE " . $this->delimite($r) . " END")
+				$l => self::l("CASE WHEN " . $this->delimite($l) . " > {$parent[$r]} THEN " . $this->delimite($l) . " - 2 ELSE " . $this->delimite($r) . " END"),
 			]);
 			return $this->createSelection()
 				->where($this->getPrimary(), $parent[$this->getPrimary()])
@@ -220,13 +208,11 @@ trait TreeTrait
 		});
 	}
 
-
 	/** @return Table\Selection */
 	public function findNodes()
 	{
 		return $this->select()->order($this->columnMapper->left);
 	}
-
 
 	/**
 	 * Gets breadcrumbs
@@ -244,7 +230,6 @@ trait TreeTrait
 		return $this->findNodesAbove($row[$l], $row[$r]);
 	}
 
-
 	/**
 	 * Gets all nodes above in tree
 	 * @param int $left
@@ -257,7 +242,6 @@ trait TreeTrait
 			->where($this->columnMapper->left . ' <= ?', (int) $left)
 			->where($this->columnMapper->right . ' >= ?', (int) $right);
 	}
-
 
 	/**
 	 * Gets all nodes below in tree
@@ -272,12 +256,10 @@ trait TreeTrait
 			->where($this->columnMapper->right . ' <= ?', (int) $right);
 	}
 
-
 	protected function delimite($column)
 	{
 		return $this->context->getConnection()->getSupplementalDriver()->delimite($column);
 	}
-
 
 	final protected function getColumnsForSelect()
 	{
@@ -292,7 +274,6 @@ trait TreeTrait
 		}
 		return $this->comlumns;
 	}
-
 
 	/**
 	 * Gets all node ids
@@ -315,7 +296,6 @@ trait TreeTrait
 		return $out;
 	}
 
-
 	/**
 	 * @param int|NULL $id
 	 * @param array|\ArrayAccess $data
@@ -334,7 +314,6 @@ trait TreeTrait
 			return $this->addNode($id, $data, $where);
 		});
 	}
-
 
 	private function addNode($id, $data, $where)
 	{
@@ -374,7 +353,6 @@ trait TreeTrait
 		return $this->insert($data);
 	}
 
-
 	/**
 	 * Move node from id to id by method move
 	 * @param int $fromId
@@ -389,7 +367,6 @@ trait TreeTrait
 			return $this->moveNodes($fromId, $toId, $move);
 		});
 	}
-
 
 	/**
 	 * Move node from id to id by method move
@@ -456,7 +433,7 @@ trait TreeTrait
 			->update([
 				$l => self::l($this->delimite($l) . ' + ' . $diff),
 				$r => self::l($this->delimite($r) . ' + ' . $diff),
-				$d => self::l($this->delimite($d) . ' + ' . $deep)
+				$d => self::l($this->delimite($d) . ' + ' . $deep),
 			]);
 		if ($to[$p] != $from[$p]) {
 			// Set new parent_id
@@ -472,11 +449,10 @@ trait TreeTrait
 			->where($y . ' NOT IN (?)', $ids)
 			->update([
 				$l => self::l("CASE WHEN " . $this->delimite($l) . " >= $min THEN " . $this->delimite($l) . " + $index ELSE " . $this->delimite($l) . " END"),
-				$r => self::l("CASE WHEN " . $this->delimite($r) . " <= $max THEN " . $this->delimite($r) . " + $index ELSE " . $this->delimite($r) . " END")
+				$r => self::l("CASE WHEN " . $this->delimite($r) . " <= $max THEN " . $this->delimite($r) . " + $index ELSE " . $this->delimite($r) . " END"),
 			]);
 		return $res;
 	}
-
 
 	/**
 	 * Select row for update/delete and lock it
@@ -502,7 +478,6 @@ trait TreeTrait
 		return $rows;
 	}
 
-
 	private function isSqlite()
 	{
 		if ($this->isSqlite === null) {
@@ -510,7 +485,6 @@ trait TreeTrait
 		}
 		return $this->isSqlite;
 	}
-
 
 	private static function l($value, ...$parameters)
 	{

@@ -15,7 +15,6 @@ trait ListCacheTrait
 	/** @var string */
 	private $idCache;
 
-
 	public function getItems()
 	{
 		$data = $this->getCache()->load('items');
@@ -25,14 +24,12 @@ trait ListCacheTrait
 		return $this->getCache()->save('items', $this->loadDialItems(), $this->addGlobalTag([]));
 	}
 
-
 	public function deleteBy(array $condition)
 	{
 		$result = parent::deleteBy($condition);
 		$this->clearCache([], $condition);
 		return $result;
 	}
-
 
 	public function insert($data)
 	{
@@ -41,14 +38,12 @@ trait ListCacheTrait
 		return $result;
 	}
 
-
 	public function updateBy(array $condition, $data)
 	{
 		$result = parent::updateBy($condition, $data);
 		$this->clearCache($data, $condition);
 		return $result;
 	}
-
 
 	protected function addGlobalTag(array $conditions)
 	{
@@ -60,12 +55,10 @@ trait ListCacheTrait
 		return $conditions;
 	}
 
-
 	protected function clearCache($data, $condition)
 	{
 		$this->getCache()->clean($this->addGlobalTag([]));
 	}
-
 
 	private function getGlobalTag()
 	{
@@ -76,11 +69,9 @@ trait ListCacheTrait
 		return $this->idCache;
 	}
 
-
 	protected function prepareConditions(& $conditions)
 	{
 	}
-
 
 	/**
 	 * List of items for cache.

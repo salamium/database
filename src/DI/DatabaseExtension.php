@@ -11,9 +11,8 @@ class DatabaseExtension extends NDI\CompilerExtension
 
 	private $defaults = [
 		'entityMap' => [],
-		'conventionClass' => Database\Conventions\Convention::class
+		'conventionClass' => Database\Conventions\Convention::class,
 	];
-
 
 	public function loadConfiguration()
 	{
@@ -25,7 +24,6 @@ class DatabaseExtension extends NDI\CompilerExtension
 		$this->checkEntityMap();
 		return $builder;
 	}
-
 
 	public function beforeCompile()
 	{
@@ -40,7 +38,6 @@ class DatabaseExtension extends NDI\CompilerExtension
 			}
 		}
 	}
-
 
 	private function checkEntityMap()
 	{
@@ -62,7 +59,6 @@ class DatabaseExtension extends NDI\CompilerExtension
 			}
 		}
 	}
-
 
 	private function updateContext(NDI\ContainerBuilder $builder, $name, NDI\ServiceDefinition $definition)
 	{
@@ -87,12 +83,10 @@ class DatabaseExtension extends NDI\CompilerExtension
 			->setType(Database\Context::class);
 	}
 
-
 	private function isNeedCacheAccessor(NDI\ServiceDefinition $definition)
 	{
 		return self::isA($definition->getType(), Database\Extension\ListCacheTrait::class) || self::isA($definition->getType(), Database\Extension\CacheTrait::class);
 	}
-
 
 	private static function isA($className, $traitName)
 	{
@@ -108,7 +102,6 @@ class DatabaseExtension extends NDI\CompilerExtension
 
 		return self::hasTrait(new \ReflectionClass($className), $traitName);
 	}
-
 
 	private static function hasTrait(\ReflectionClass $class, $traitName)
 	{
@@ -129,22 +122,19 @@ class DatabaseExtension extends NDI\CompilerExtension
 		return false;
 	}
 
-
 	private function createConvention($builder, $convention, $databaseName)
 	{
 		return $builder->addDefinition($this->prefix('convention.' . $databaseName))
 			->setClass($this->config['conventionClass'], [
 				$convention,
-				$this->config['entityMap'][$databaseName]
+				$this->config['entityMap'][$databaseName],
 			]);
 	}
-
 
 	private static function getDatabaseName($name)
 	{
 		return explode('.', $name)[1];
 	}
-
 
 	private static function isIConventions($class, $interface)
 	{

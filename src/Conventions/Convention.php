@@ -13,13 +13,11 @@ class Convention implements IConventions
 	/** @var array */
 	private $entityMap = [];
 
-
 	public function __construct(ND\IConventions $conventions, array $entityMap)
 	{
 		$this->conventions = $conventions;
 		$this->entityMap = $entityMap;
 	}
-
 
 	public function getEntityClass($table)
 	{
@@ -29,18 +27,15 @@ class Convention implements IConventions
 		return $this->entityMap[$table];
 	}
 
-
 	public function getBelongsToReference($table, $key)
 	{
 		return $this->conventions->getBelongsToReference($table, $key);
 	}
 
-
 	public function getHasManyReference($table, $key)
 	{
 		return $this->conventions->getHasManyReference($table, $key);
 	}
-
 
 	public function getPrimary($table)
 	{
