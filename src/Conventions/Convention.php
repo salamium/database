@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Salamium\Database\Conventions;
 
@@ -19,10 +19,10 @@ class Convention implements IConventions
 		$this->entityMap = $entityMap;
 	}
 
-	public function getEntityClass($table)
+	public function getEntityClass(string $table): string
 	{
 		if (!isset($this->entityMap[$table])) {
-			return false;
+			return '';
 		}
 		return $this->entityMap[$table];
 	}

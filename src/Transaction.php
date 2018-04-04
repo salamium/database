@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Salamium\Database;
 
@@ -13,13 +13,15 @@ class Transaction
 	/** @var int 0 - mean not in transaction */
 	private $id = 0;
 
+
 	public function __construct(ND\Connection $connection)
 	{
 		$this->connection = $connection;
 	}
 
-	/** @return int Id */
-	public function begin()
+
+	/** Return deep transaction. */
+	public function begin(): int
 	{
 		if ($this->inTransaction()) {
 			++$this->id;
@@ -31,8 +33,9 @@ class Transaction
 		return $this->id;
 	}
 
-	/** @return int Id */
-	public function commit()
+
+	/** Return deep transaction. */
+	public function commit(): int
 	{
 		if ($this->checkTransaction() > 1) {
 			$this->connection->query('RELEASE ' . $this->getSavepoint());
@@ -42,8 +45,9 @@ class Transaction
 		return --$this->id;
 	}
 
-	/** @return int Id of point */
-	public function rollBack()
+
+	/** Return deep transaction. */
+	public function rollBack(): int
 	{
 		if ($this->checkTransaction() > 1) {
 			$this->connection->query('ROLLBACK TO ' . $this->getSavepoint());
@@ -52,6 +56,7 @@ class Transaction
 		}
 		return --$this->id;
 	}
+
 
 	/**
 	 * @param callable $callback
@@ -70,8 +75,9 @@ class Transaction
 		}
 	}
 
-	/** @return int Id */
-	public function inTransaction()
+
+	/** Return deep transaction. */
+	public function inTransaction(): int
 	{
 		$inTransaction = $this->connection->getPdo()->inTransaction();
 		if ($inTransaction && $this->id < 1 || !$inTransaction && $this->id > 0) {
@@ -80,8 +86,9 @@ class Transaction
 		return $this->id;
 	}
 
-	/** @return int */
-	private function checkTransaction()
+
+	/** Return deep transaction. */
+	private function checkTransaction(): int
 	{
 		if (!$this->inTransaction()) {
 			throw new NoTransactionException('Let\'s start transaction via begin().');
@@ -89,7 +96,8 @@ class Transaction
 		return $this->id;
 	}
 
-	private function getSavepoint()
+
+	private function getSavepoint(): string
 	{
 		return 'SAVEPOINT id_' . $this->id;
 	}

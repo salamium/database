@@ -1,6 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Salamium\Database;
+
+use Nette\Database\Table\ActiveRow;
 
 /**
  * @author Milan Matejcek
@@ -28,88 +30,23 @@ abstract class Repository
 	 * @param mixed $id
 	 * @return int
 	 */
-	public function delete($id)
+	public function delete($id): int
 	{
-		return $this->find($id)->delete();
+		return $this->wherePrimary($id)->delete();
 	}
 
-	/**
-	 * @param array $condition
-	 * @return int
-	 */
-	public function deleteBy(array $condition)
+	public function exists(array $condition): ?ActiveRow
 	{
-		return $this->findBy($condition)->delete();
-	}
-
-	/**
-	 * @param array $condition
-	 * @return Table\Entity|FALSE
-	 */
-	public function exists(array $condition)
-	{
-		return $this->findBy($condition)->limit(1)->fetch();
-	}
-
-	/**
-	 * @param array $condition
-	 * @return bool
-	 */
-	public function existsStrict(array $condition)
-	{
-		return (bool) $this->findBy($condition)->select('1 AS exists')->limit(1)->fetch();
-	}
-
-	/**
-	 * @param mixed $id
-	 * @param string $column
-	 * @param mixed $params
-	 * @return Table\Entity
-	 */
-	public function fetch($id, $column = null, ...$params)
-	{
-		$sql = $this->find($id);
-		if ($column) {
-			$sql->select($column, ...$params);
+		$entity = $this->bindConditions($condition)->limit(1)->fetch();
+		if ($entity === false) {
+			return null;
 		}
-		return $sql->fetch();
+		return $entity;
 	}
 
-	/**
-	 * @param array $condition
-	 * @param string $column
-	 * @param mixed $params
-	 * @return Table\Entity
-	 */
-	public function fetchBy(array $condition, $column = null, ...$params)
-	{
-		$sql = $this->findBy($condition);
-		if ($column) {
-			$sql->select($column, ...$params);
-		}
-		return $sql->fetch();
-	}
-
-	/**
-	 * @param mixed $id
-	 * @return Table\Selection
-	 */
-	public function find($id)
+	public function wherePrimary($id): Table\Selection
 	{
 		return $this->createSelection()->wherePrimary($id);
-	}
-
-	/**
-	 * @param array $condition
-	 * @return Table\Selection
-	 */
-	public function findBy(array $condition)
-	{
-		$sql = $this->createSelection();
-		foreach ($condition as $column => $value) {
-			$sql->where($column, $value);
-		}
-		return $sql;
 	}
 
 	/**
@@ -121,27 +58,17 @@ abstract class Repository
 		return $this->createSelection()->insert($data);
 	}
 
-	/**
-	 * Only for unique row.
-	 * @param array $condition
-	 * @param array $data
-	 * @return Table\Entity
-	 */
-	public function save(array $condition, array $data)
+	public function save(array $condition, array $data): ?ActiveRow
 	{
-		if ($entity = $this->exists($condition)) {
+		$entity = $this->exists($condition);
+		if ($entity !== null) {
 			$entity->update($data);
 			return $entity;
 		}
 		return $this->insert($data + $condition);
 	}
 
-	/**
-	 * @param string|NULL $columns
-	 * @param mixed $args
-	 * @return Table\Selection
-	 */
-	public function select($columns = null, ...$args)
+	public function select(?string $columns = null, ...$args): Table\Selection
 	{
 		$sql = $this->createSelection();
 		if ($columns !== null) {
@@ -150,34 +77,17 @@ abstract class Repository
 		return $sql;
 	}
 
-	/**
-	 * @param mixed $id
-	 * @param array $data
-	 * @return int
-	 */
-	public function update($id, $data)
+	public function update($id, $data): int
 	{
-		return $this->find($id)->update($data);
+		return $this->wherePrimary($id)->update($data);
 	}
 
-	/**
-	 * @param array $condition
-	 * @param array $data
-	 * @return int
-	 */
-	public function updateBy(array $condition, $data)
-	{
-		return $this->findBy($condition)->update($data);
-	}
-
-	/** @return Transaction */
-	public function getTransaction()
+	public function getTransaction(): Transaction
 	{
 		return $this->context->getTransaction();
 	}
 
-	/** @return Table\Selection */
-	protected function createSelection()
+	protected function createSelection(): Table\Selection
 	{
 		return $this->context->table($this->table);
 	}
@@ -193,6 +103,15 @@ abstract class Repository
 	final protected function getPrimary()
 	{
 		return $this->context->getConventions()->getPrimary($this->table);
+	}
+
+	protected function bindConditions(array $condition)
+	{
+		$sql = $this->createSelection();
+		foreach ($condition as $column => $value) {
+			$sql->where($column, $value);
+		}
+		return $sql;
 	}
 
 }

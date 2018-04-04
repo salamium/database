@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Salamium\Database\Conventions;
 
@@ -7,8 +7,6 @@ use Nette\Database as ND;
 interface IConventions extends ND\IConventions
 {
 
-	/**
-	 * @param string $table
-	 */
-	function getEntityClass($table);
+	function getEntityClass(string $table): string;
+
 }

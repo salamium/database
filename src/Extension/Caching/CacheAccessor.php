@@ -13,16 +13,14 @@ class CacheAccessor
 	/** @var Caching\Cache */
 	private $cache;
 
+
 	public function __construct(Caching\IStorage $storage)
 	{
 		$this->storage = $storage;
 	}
 
-	/**
-	 * @param string $table
-	 * @return Caching\Cache
-	 */
-	public function get($table)
+
+	public function get(string $table): Caching\Cache
 	{
 		$key = 'salamium.database.' . $table;
 		if (!isset($this->cache[$key])) {

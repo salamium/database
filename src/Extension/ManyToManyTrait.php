@@ -15,7 +15,7 @@ trait ManyToManyTrait
 	 * @param array $columnL - column => one value, scalar ['user_id' => 1]
 	 * @param array $columnR - column => list of array ['book_id' => [1, 2, 3]]
 	 */
-	public function updateRelation(array $columnL, array $columnR)
+	public function updateRelation(array $columnL, array $columnR): void
 	{
 		$cR = key($columnR);
 		$newValues = (array) current($columnR);

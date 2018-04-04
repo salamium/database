@@ -3,6 +3,7 @@
 namespace Salamium\Database\Extension;
 
 use Nette\Caching as NC;
+use Nette\Database\Row;
 
 /**
  * If you need cache all table like dial data, for example list of countries.
@@ -15,6 +16,7 @@ trait ListCacheTrait
 	/** @var string */
 	private $idCache;
 
+
 	public function getItems()
 	{
 		$data = $this->getCache()->load('items');
@@ -24,28 +26,16 @@ trait ListCacheTrait
 		return $this->getCache()->save('items', $this->loadDialItems(), $this->addGlobalTag([]));
 	}
 
-	public function deleteBy(array $condition)
-	{
-		$result = parent::deleteBy($condition);
-		$this->clearCache([], $condition);
-		return $result;
-	}
 
-	public function insert($data)
+	public function insert($data): Row
 	{
 		$result = parent::insert($data);
 		$this->clearCache($data, []);
 		return $result;
 	}
 
-	public function updateBy(array $condition, $data)
-	{
-		$result = parent::updateBy($condition, $data);
-		$this->clearCache($data, $condition);
-		return $result;
-	}
 
-	protected function addGlobalTag(array $conditions)
+	protected function addGlobalTag(array $conditions): array
 	{
 		if (!isset($conditions[NC\Cache::TAGS])) {
 			$conditions[NC\Cache::TAGS] = [];
@@ -55,12 +45,14 @@ trait ListCacheTrait
 		return $conditions;
 	}
 
-	protected function clearCache($data, $condition)
+
+	protected function clearCache($data, array $condition): void
 	{
 		$this->getCache()->clean($this->addGlobalTag([]));
 	}
 
-	private function getGlobalTag()
+
+	private function getGlobalTag(): string
 	{
 		if ($this->idCache === null) {
 			$classPath = explode('\\', static::class);
@@ -69,13 +61,15 @@ trait ListCacheTrait
 		return $this->idCache;
 	}
 
-	protected function prepareConditions(& $conditions)
+
+	protected function prepareConditions(& $conditions): void
 	{
 	}
 
+
 	/**
 	 * List of items for cache.
-	 * @return array
 	 */
-	abstract protected function loadDialItems();
+	abstract protected function loadDialItems(): array;
+
 }

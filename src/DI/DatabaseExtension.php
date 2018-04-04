@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Salamium\Database\DI;
 
-use Salamium\Database,
-	Nette\Database AS ND,
-	Nette\DI AS NDI;
+use Salamium\Database;
+use Nette\Database AS ND;
+use Nette\DI AS NDI;
 
 class DatabaseExtension extends NDI\CompilerExtension
 {
@@ -141,4 +141,5 @@ class DatabaseExtension extends NDI\CompilerExtension
 		$interfaces = class_implements($class);
 		return isset($interfaces[$interface]);
 	}
+
 }
